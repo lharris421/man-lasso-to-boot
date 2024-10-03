@@ -1,0 +1,69 @@
+\section{Introduction}
+
+We have previously shown that although the bootstrap fails in the traditional sense of producing confidence intervals, that with a tweak in methodology and perspective that one can arrive at confidence intervals with reasonable coverage behaviors while retaining faithfulness to the lasso model fit. 
+
+The methodological fix revolves around sampling from the full conditional posterior (FCP) when $\hat{\beta}_j = 0$. By replacing this bootstrap sample with a draw from the FCP, we can avoid having a point mass at 0 as well as obtain bootstrapped CIs that have reasonable widths. This turns out to also be rather robust to the initial assumptions made.
+
+The main hang up with gaining buy in for this interval producing method is that it under covers larger values of $\beta$, presumably the ones the practitioner care the most about. This flaw is inherent to constructing intervals around biased estimators which is why much focus has been placed using the lasso as a conduit for producing inference about the population parameter. 
+
+In the exploration of sampling from the FCP while bootstrapping we naturally arrived at the estimator $z_j = \frac{1}{n}\x_j^T\r_{-j}$ as this is at the core of the FCP and in part determines, along with $\lambda$ where the FCP will be centered. Additionally, in the final penalized regression model, it is this value that the penalty is applied to to arrive at each $\bh_j$. Or in other words, if $\bh_j = P(z_j)$,  $z_j = P^{-1}(\bh_j)$. This raises the natural question, what if instead of bootstrapping the lasso estimates we sample the unpenalized estimator. This initially appears like it should perform well and is very simple to estimate. In the non-orthogonal case, $z_j = \beta^*_j + \frac{1}{n}\x_j^T \epsilon + \frac{1}{n}\x_j^T \X_{-j}(\bb^*_{-j} - \bbh_{-j})$. Under the assumption of iid errors, this suggests that $z_j$ is normally distributed around $\beta^*_j$ plus some bias that depends on the correlation between $\x_j$ and the other covariates and the bias of the estimates for $\bb_{-j}$. That is, the direct bias from penalization is removed. To understand the bias that is still introduced, consider wlg a situation where p = 2, $\beta_1 > 0$, $\beta_2 = 0$ and $\bh_1 > 0$, and $\frac{1}{n}\x_1^T\x_2 = \rho > 0$. $z_1$ will be biased towards zero then if $\bh_2 > 0$. If the sample correlation is low or the estimates are reasonably close to the true $\beta$ values, then this bias should be minimal. Additionally, one might expect that the bootstrapping this estimator in high dimensions would help capture this uncertainty about the estimate leading to a certain level of robustness.
+
+However, even in the case of simple independence, the coverage rate is below nominal and is not robust to alternative correlation structures among the predictors. It appears that bootstrapping is rather susceptible to this correlation induced bias. Even just a simple normal approximation using the expression above gives better coverage performance. The normal approximation intervals are also generally narrower, suggesting that the issue with the bootstrap revolves around how it is affected by bias.
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_independence}
+    \caption{\label{Fig:sim_independence}}
+    \end{center}
+\end{figure}
+
+The normal approximation still undercovers for nonzero $\beta$s but to a lesser degree. If we look at some example CIs for one of the simulation in the figure above, we can see it appears to be less suceptible to the bias.
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_independence_example}
+    \caption{\label{Fig:sim_independence_exaple}}
+    \end{center}
+\end{figure}
+
+We can even hone in a bit further and look at the CIs compared to the original debiased estimate compared to the bootstrap draws for debiased:
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{bootdist_indep}
+    \caption{\label{Fig:bootdist_indep}}
+    \end{center}
+\end{figure}
+
+The phenomenon is not unique to this situation of independence either, even as correlation among the predictors is introduced, a place where the bootstrap would be expected to perform better than a normal approximation, this same pattern is still observed. We also see that the normal approximation suffers from bias as correlation among the predictors increases as well. So something more would be needed to make these interval estimates robust to correlation. 
+
+\logan{In comes pipe}
+
+While not the motivation for PIPE, as it turns out, an adjustment to this normal approximation was proposed by \logan{enter citation}. The main idea behind pipe is constructing a test statistic by using approximate projection onto the column space of the active features. The computing the PIPE estimator, $\bar{\beta}$, is equivalent to computing $z_j$, however in its construction, an alternative variance is suggested. Specifically, if $\hat{S} = \lbrace k: \hat{\beta}_k \neq  0 \rbrace$ and $\hat{S}_j = \hat{S} \text{ if } j \notin \hat{S}$ and $\hat{S}_j = \hat{S} - \lbrace j \rbrace \text{ if } j \in \hat{S}$  then let $\Q_{\hat{S}_j} = \I - \X_{\hat{S}_j}(\X_{\hat{S}_j}^T \X_{\hat{S}_j})^{-1} \X_{\hat{S}_j}^T$. The variance of $\bar{\beta}$ is $(\x_j^T \Q_{\hat{S}_j} \x_j)^{-1}\hat{\sigma}^2$. The logical interpretation of $\x_j^T \Q_{\hat{S}_j} \x_j$ is an adjusted sample size for inference on $\beta_j$ based on how much information in $\x_j$ is orthogonal to $\X_{\hat{S}_j}$. 
+
+The beauty of this construction is that the variance of the PIPE estimator is inherently related to the bias of the estimator. So, while no attempt is made to correct for the bias, in cases where the bias is likely large, so too is the resulting variance.
+
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_abn}
+    \caption{\label{Fig:sim_abn}}
+    \end{center}
+\end{figure}
+
+\section{Back to the FCP}
+
+As noted previously, when bootstrapping the lasso, the previously recommended fix was to sample from the FCP when $\bh_j = 0$. As one could imagine, throwing out the bootstrap and just constructing intervals from these posteriors results in insufficient coverage. Unsurprising as this serves as a short cut to a fully Bayesian approach. In efforts to obtain computational efficiency, the intervals are too narrow as they do not account for the fact that the FCPs are being constructed conditioning on $\bb_{-j} = \bbh_{-j}$. Doing results in $L(\beta_j|\bbh_{-j}, \lambda, \sigma^2) \propto \exp(-\frac{n}{2\sigma^2}(\beta_{j}^2 - 2 z_{j} \beta_{j}))$.
+
+PIPE can be interpreted as taking this a step further by accounting for the fact that we are conditioning on the selected model, specifically $\hat{S}_j$. 
+
+\logan{Well kinda, is more like a partially conditional likelihood? Or a profile likelihood based on the kkt conditions? I haven't had luck in deriving it yet.}
+
+This results in the following likelihood: $L(\beta_j|\bbh_{-j}, \hat{S}_j, \lambda, \sigma^2) \propto \exp(-\frac{\x_j^T \Q_{\hat{S}_j} \x_j}{2\sigma^2}(\beta_{j}^2 - 2 \bar{\beta}_{j} \beta_{j}))$. 
+
+Building off this likelihood instead of the fully conditional one, we can build posterior distributions that are adjusted to account for the conditioning on the selected model.
+
+In terms of the average coverage properties outlined in \logan{cite first paper}, it behaves very similarly to the proposed methodological fix. However, it works in about a fraction of the time and is more robust to correlation among predictors due to its construction. 
+
+However, it is the application to the MCP penalty that is of greatest interest. Specifically to use this as an alternative option to the PIPE estimator itself.
+

@@ -47,3 +47,11 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# ignore figures
+*.png
+*.pdf
+
+# ignore unneeded latex files
+*.fdb_latexmk
+*.fls
