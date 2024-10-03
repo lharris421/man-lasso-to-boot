@@ -13,7 +13,7 @@ However, even in the case of simple independence, the coverage rate is below nom
 \begin{figure}[hbtp]
     \begin{center}
     \includegraphics[width=0.65\linewidth]{sim_independence}
-    \caption{\label{Fig:sim_independence}}
+    \caption{\label{Fig:sim_independence} Covariates generated under independence, SNR = 1, with 8 true non-zero $\beta$ values of decreasing magnitude. Plot displays results from all 1000 simulations.}
     \end{center}
 \end{figure}
 
@@ -22,7 +22,7 @@ The normal approximation still undercovers for nonzero $\beta$s but to a lesser 
 \begin{figure}[hbtp]
     \begin{center}
     \includegraphics[width=0.65\linewidth]{sim_independence_example}
-    \caption{\label{Fig:sim_independence_exaple}}
+    \caption{\label{Fig:sim_independence_exaple} An example of results from a single simulation in plot 1.}
     \end{center}
 \end{figure}
 
@@ -31,7 +31,7 @@ We can even hone in a bit further and look at the CIs compared to the original d
 \begin{figure}[hbtp]
     \begin{center}
     \includegraphics[width=0.65\linewidth]{bootdist_indep}
-    \caption{\label{Fig:bootdist_indep}}
+    \caption{\label{Fig:bootdist_indep} The bootstrap distribution for a for variable 2 in plot 2 with CIs superimposed. }
     \end{center}
 \end{figure}
 
@@ -47,7 +47,7 @@ The beauty of this construction is that the variance of the PIPE estimator is in
 \begin{figure}[hbtp]
     \begin{center}
     \includegraphics[width=0.65\linewidth]{sim_abn}
-    \caption{\label{Fig:sim_abn}}
+    \caption{\label{Fig:sim_abn} Data generated with the same true values of $\beta$ as under the previous simulation, with now each non-zero $\beta$ is correlated with two null variables with exchangeable correlation and $\rho = 0.5$.}
     \end{center}
 \end{figure}
 
@@ -72,7 +72,7 @@ However, it is the application to the MCP penalty that is of greatest interest. 
 \begin{figure}[hbtp]
     \begin{center}
     \includegraphics[width=0.65\linewidth]{sim_ldpe}
-    \caption{\label{Fig:sim_ldpe} p = 3000, n = 200, $\beta_j = \sqrt{\frac{18\log(p)}{n}} if j \in \lbrace \rbrace$ $\beta_j = \sqrt{\frac{18\log(p)}{nj^2}}$}
+    \caption{\label{Fig:sim_ldpe} p = 3000, n = 200, $\beta_j = \sqrt{\frac{18\log(p)}{n}} \text{ if } j \in \lbrace 1500, 1800, 2100, 2400, 2700, 3000 \rbrace$ else $\beta_j = \sqrt{\frac{18\log(p)}{nj^2}}$. Correlation is autoregressive with $\rho = 0.8$}
     \end{center}
 \end{figure}
 
