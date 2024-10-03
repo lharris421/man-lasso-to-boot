@@ -25,7 +25,7 @@ methods <- list(
   "pipe"  = list(method = "pipe_ncvreg", method_arguments = list()),
   "pipe_mcp"  = list(method = "pipe_ncvreg", method_arguments = list(penalty = "MCP")),
   "normal_approx"  = list(method = "pipe_ncvreg", method_arguments = list(original_n = TRUE)),
-  "mcp"   = list(method = "posterior", method_arguments = list(penalty = "MCP", studentize = FALSE, adjust_ss = TRUE))
+  "mcp_pipe"   = list(method = "posterior", method_arguments = list(penalty = "MCP", studentize = FALSE, adjust_ss = TRUE))
 )
 for (i in 1:length(methods)) {
   methods[[i]]$method_arguments["alpha"] <- 0.05

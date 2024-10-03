@@ -13,7 +13,7 @@ simulation_info <- list(
 variables_of_interest <- c("A1", "B1", "N1", "N2", "N3")
 
 ## Load data back in
-methods <- methods[c("pipe", "mcp", "pipe_mcp")]
+methods <- methods[c("mcp_pipe", "pipe", "pipe_mcp")]
 results <- list()
 for (i in 1:length(methods)) {
   results[[names(methods)[i]]] <- indexr::read_objects(
