@@ -55,3 +55,9 @@ rsconnect/
 # ignore unneeded latex files
 *.fdb_latexmk
 *.fls
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.gz
