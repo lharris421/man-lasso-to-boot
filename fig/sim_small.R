@@ -4,8 +4,8 @@ source("./fig/setup.R")
 simulation_info <- list(
   simulation_function = "gen_data",
   simulation_arguments = list(
-    n = 100, p = 100,
-    beta = c(-2, 2, -1, 1, -0.5, 0.5, -0.5, 0.5, rep(0, 92))
+    n = 50, p = 100,
+    beta = c(rep(0.5, 10), rep(0, 90))
   )
 )
 
@@ -23,6 +23,6 @@ for (i in 1:length(methods)) {
 }
 
 
-pdf("./fig/sim_independence.pdf", height = 5, width = 7)
+pdf("./fig/sim_small.pdf", height = 5, width = 7)
 ci_coverage_plot(results, variables_of_interest)
 dev.off()

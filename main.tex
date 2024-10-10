@@ -12,6 +12,13 @@ However, even in the case of simple independence, the coverage rate is below nom
 
 \begin{figure}[hbtp]
     \begin{center}
+    \includegraphics[width=\linewidth]{sim_ortho_script}
+    \caption{\label{Fig:sim_ortho} Covariates generated under orthogonality, SNR = 1, with 8 true non-zero $\beta$ values of decreasing magnitude. Plot displays results from all 1000 simulations.}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
     \includegraphics[width=\linewidth]{sim_independence}
     \caption{\label{Fig:sim_independence} Covariates generated under independence, SNR = 1, with 8 true non-zero $\beta$ values of decreasing magnitude. Plot displays results from all 1000 simulations.}
     \end{center}
@@ -37,12 +44,11 @@ We can even hone in a bit further and look at the CIs compared to the original d
 
 The phenomenon is not unique to this situation of independence either, even as correlation among the predictors is introduced, a place where the bootstrap would be expected to perform better than a normal approximation, this same pattern is still observed. We also see that the normal approximation suffers from bias as correlation among the predictors increases as well. So something more would be needed to make these interval estimates robust to correlation. 
 
-\logan{In comes pipe}
-
 While not the motivation for PIPE, as it turns out, an adjustment to this normal approximation was proposed by \logan{enter citation}. The main idea behind pipe is constructing a test statistic by using approximate projection onto the column space of the active features. The computing the PIPE estimator, $\bar{\beta}$, is equivalent to computing $z_j$, however in its construction, an alternative variance is suggested. Specifically, if $\hat{S} = \lbrace k: \hat{\beta}_k \neq  0 \rbrace$ and $\hat{S}_j = \hat{S} \text{ if } j \notin \hat{S}$ and $\hat{S}_j = \hat{S} - \lbrace j \rbrace \text{ if } j \in \hat{S}$  then let $\Q_{\hat{S}_j} = \I - \X_{\hat{S}_j}(\X_{\hat{S}_j}^T \X_{\hat{S}_j})^{-1} \X_{\hat{S}_j}^T$. The variance of $\bar{\beta}$ is $(\x_j^T \Q_{\hat{S}_j} \x_j)^{-1}\hat{\sigma}^2$. The logical interpretation of $\x_j^T \Q_{\hat{S}_j} \x_j$ is an adjusted sample size for inference on $\beta_j$ based on how much information in $\x_j$ is orthogonal to $\X_{\hat{S}_j}$. 
 
 The beauty of this construction is that the variance of the PIPE estimator is inherently related to the bias of the estimator. So, while no attempt is made to correct for the bias, in cases where the bias is likely large, so too is the resulting variance.
 
+\section{Adding correlation}
 
 \begin{figure}[hbtp]
     \begin{center}
@@ -50,6 +56,50 @@ The beauty of this construction is that the variance of the PIPE estimator is in
     \caption{\label{Fig:sim_abn} Data generated with the same true values of $\beta$ as under the previous simulation, with now each non-zero $\beta$ is correlated with two null variables with exchangeable correlation and $\rho = 0.5$.}
     \end{center}
 \end{figure}
+
+\section{Digging into bootstrap bias}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_b_selection}
+    \caption{\label{Fig:sim_b_selection} }
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_b_selection_single}
+    \caption{\label{Fig:sim_b_selection_single} }
+    \end{center}
+\end{figure}
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_b_selection_corr_slopes}
+    \caption{\label{Fig:sim_b_selection_corr_slopes} Slope estimates for regression of boot debiased estimate vs corr. }
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_b_selection_single_corr_bias_est}
+    \caption{\label{Fig:sim_b_selection_single_corr_bias_est} }
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_b_selection_single_corr_bias}
+    \caption{\label{Fig:sim_b_selection_single_corr_bias}  }
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{sim_b_selection_corr_bias}
+    \caption{\label{Fig:sim_b_selection_corr_bias} Diff avg. B est between boot draws with cor < and > the orig sample corr between AB. }
+    \end{center}
+\end{figure}
+
 
 \section{Back to the FCP}
 
@@ -68,6 +118,21 @@ In terms of the average coverage properties outlined in \logan{cite first paper}
 However, it is the application to the MCP penalty that is of greatest interest. Specifically to use this as an alternative option to the PIPE estimator itself.
 
 \section{Other results}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{sim_gene}
+    \caption{\label{Fig:sim_gene} Covariates generated with AR corr with rho = 0.7, with 10 true non-zero $\beta$ values of decreasing magnitude all contiguous. Plot displays results from all 1000 simulations.}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{sim_small}
+    \caption{\label{Fig:sim_small} Covariates generated under independence with 10 true non-zero $\beta$ values = 0.5. n = 50, p = 100. Plot displays results from all 1000 simulations.}
+    \end{center}
+\end{figure}
+
 
 \begin{figure}[hbtp]
     \begin{center}

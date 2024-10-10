@@ -8,7 +8,8 @@ rds_path <- glue::glue("{res_dir}/rds/")
 
 packages <- c(
   "dplyr", "tidyr", "ggplot2", "kableExtra",
-  "glue", "indexr", "hdrm", "stringr"
+  "glue", "indexr", "hdrm", "stringr",
+  "patchwork"
 )
 
 quietlyLoadPackage <- function(package) {
