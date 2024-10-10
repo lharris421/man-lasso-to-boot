@@ -25,6 +25,7 @@ dev.off()
 
 ## Correlations vs bias
 ## First histogram (res$ests)
+which_sim <- which.max(apply(res$bs, 1, mean) - res$orig_bs)
 df <- data.frame(
   ests = res$ests[which_sim, ],
   corrs = res$corrs[which_sim, ],
@@ -37,7 +38,7 @@ df_vline <- data.frame(
   LineType = "Original Estimate"
 )
 p1 <- ggplot(df, aes(x = ests)) +
-  geom_histogram(binwidth = diff(range(df_ests$ests)) / 30, 
+  geom_histogram(binwidth = diff(range(df$ests)) / 30, 
                  fill = pal[1], color = "white") +
   geom_vline(data = df_vline, aes(xintercept = ests, color = LineType),
              linetype = "dashed", size = 1) +
@@ -51,7 +52,7 @@ p1 <- ggplot(df, aes(x = ests)) +
 
 ## Second histogram (res$corrs)
 p2 <- ggplot(df, aes(x = corrs)) +
-  geom_histogram(binwidth = diff(range(df_corrs$corrs)) / 30, 
+  geom_histogram(binwidth = diff(range(df$corrs)) / 30, 
                  fill = pal[2], color = "white") +
   geom_vline(data = df_vline, aes(xintercept = corrs, color = LineType),
              linetype = "dashed", size = 1) +
@@ -65,7 +66,7 @@ p2 <- ggplot(df, aes(x = corrs)) +
 
 ## Third histogram (res$bs)
 p3 <- ggplot(df, aes(x = bs)) +
-  geom_histogram(binwidth = diff(range(df_bs$bs)) / 30, 
+  geom_histogram(binwidth = diff(range(df$bs)) / 30, 
                  fill = pal[3], color = "white") +
   geom_vline(data = df_vline, aes(xintercept = bs, color = LineType),
              linetype = "dashed", size = 1) +
@@ -78,10 +79,6 @@ p3 <- ggplot(df, aes(x = bs)) +
   theme_minimal()
 
 # Combine the plots vertically with a shared legend
-(p1 / p2 / p3) +
-  plot_layout(guides = "collect") &
-  theme(legend.position = "bottom")
-
 pdf("./fig/sim_b_selection_single.pdf", height = 7, width = 7)
 (p1 / p2 / p3) +
   plot_layout(guides = "collect") &
@@ -98,7 +95,6 @@ corr_bias_rel <- sapply(1:1000, function(which_sim) {
 })
 
  # ggtitle("Slope estimates for regression of boot debiased estimate vs corr")
-
 pdf("./fig/sim_b_selection_corr_slopes.pdf", height = 7, width = 7)
 ggplot(data.frame(x = corr_bias_rel), aes(x = x)) +
   geom_histogram(color = "white", fill = pal[3], binwidth = 0.05) +
