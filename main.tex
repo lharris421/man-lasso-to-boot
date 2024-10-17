@@ -59,46 +59,6 @@ The beauty of this construction is that the variance of the PIPE estimator is in
 
 \section{Digging into bootstrap bias}
 
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=0.65\linewidth]{sim_b_selection}
-    \caption{\label{Fig:sim_b_selection} }
-    \end{center}
-\end{figure}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=0.65\linewidth]{sim_b_selection_single}
-    \caption{\label{Fig:sim_b_selection_single} }
-    \end{center}
-\end{figure}
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=0.65\linewidth]{sim_b_selection_corr_slopes}
-    \caption{\label{Fig:sim_b_selection_corr_slopes} Slope estimates for regression of boot debiased estimate vs corr. }
-    \end{center}
-\end{figure}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=0.65\linewidth]{sim_b_selection_single_corr_bias_est}
-    \caption{\label{Fig:sim_b_selection_single_corr_bias_est} }
-    \end{center}
-\end{figure}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=0.65\linewidth]{sim_b_selection_single_corr_bias}
-    \caption{\label{Fig:sim_b_selection_single_corr_bias}  }
-    \end{center}
-\end{figure}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=0.65\linewidth]{sim_b_selection_corr_bias}
-    \caption{\label{Fig:sim_b_selection_corr_bias} Diff avg. B est between boot draws with cor < and > the orig sample corr between AB. }
-    \end{center}
-\end{figure}
 
 
 \section{Back to the FCP}
@@ -146,5 +106,26 @@ However, it is the application to the MCP penalty that is of greatest interest. 
     \begin{center}
     \includegraphics[width=\linewidth]{sim_highcorr}
     \caption{\label{Fig:sim_highcorr} n = p = 100, $\rho_{A1, B1} = 0.99$}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{sim_grp_same_dir}
+    \caption{\label{Fig:sim_grp_same_dir} n = p = 100, $\rho_{V1, V2} = 0.5$ for $G1$ otherwise, $\rho_{V1, V2} = 0$. $V1_G1 = 0.8$, $V2_G1 = 0.2$, and all other coefficients are 0.}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{sim_grp_opposite_dir}
+    \caption{\label{Fig:sim_grp_opposite_dir} n = p = 100, group sizes of 5, $\rho_{within} = 0.5$, $\rho_{between} = 0$. $V1_G1 = -V2_G1 = V3_G1 = 0.5$, and all other coefficients are 0.}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{sim_grp_same_dir_same_eff}
+    \caption{\label{Fig:ssim_grp_same_dir_same_eff} n = p = 100, group sizes of 4, $\rho_{G1} = 0.5$ but zero for all other groups and $\rho_{between} = 0$. $V1_G1 = V2_G1 = V3_G1 = 1$, and all other coefficients are 0.}
     \end{center}
 \end{figure}

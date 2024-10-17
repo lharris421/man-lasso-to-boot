@@ -170,3 +170,19 @@ dev.off()
 # addtl_bias <- res$orig_est - apply(res$ests, 1, mean)
 # addtl_bias_est <- apply(res$bs * res$corrs, 1, mean) - res$orig_bs * res$orig_corrs
 # plot(addtl_bias_est, addtl_bias)
+
+
+## Attempt 2
+bs_quant <- sapply(1:1000, function(which_sim) {
+  sum(res$bs[which_sim,] > res$orig_bs[which_sim]) /  sum(res$bs[which_sim,] != res$orig_bs[which_sim])
+})
+
+hist(bs_quant,
+     xlab = "Proportion draws",
+     main = "Prop. boot draws for B greater than original estimate")
+abline(v = 0.5, col = "red")
+
+## breaking down mean / median bias
+brks <- seq(-.05, .10, by = 0.01)
+hist(res$orig_est - apply(res$ests, 1, mean), breaks = brks)
+hist(apply((res$corrs * res$bs) - (res$orig_corrs * res$orig_bs), 1, mean), breaks = brks)
