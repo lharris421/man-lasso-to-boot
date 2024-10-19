@@ -48,23 +48,72 @@ While not the motivation for PIPE, as it turns out, an adjustment to this normal
 
 The beauty of this construction is that the variance of the PIPE estimator is inherently related to the bias of the estimator. So, while no attempt is made to correct for the bias, in cases where the bias is likely large, so too is the resulting variance.
 
-\section{Adding correlation}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=\linewidth]{sim_abn}
-    \caption{\label{Fig:sim_abn} Data generated with the same true values of $\beta$ as under the previous simulation, with now each non-zero $\beta$ is correlated with two null variables with exchangeable correlation and $\rho = 0.5$.}
-    \end{center}
-\end{figure}
-
 \section{Digging into bootstrap bias}
 
+\subsection{Single signal variable, no correlation}
+
+This also just suggests (as is the case for the rest of the decomps) that looking at the difference is the most notable pattern.
+
 \begin{figure}[hbtp]
     \begin{center}
-    \includegraphics[width=\linewidth]{sim_b_selection}
-    \caption{\label{Fig:sim_b_selection} n = p = 100, $\beta_A = 2$, $\beta_B = 0$, $\rho_{A,B} = 0.5$, all other $\beta$s = 0.}
+    \includegraphics[width=\linewidth]{bias_decomp_orig}
+    \caption{\label{Fig:bias_decomp_orig} n = p = 100, $\beta_A = 2$ all other $\beta$s = 0. All covariates generated under independence}
     \end{center}
 \end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{bias_decomp_boot}
+    \caption{\label{Fig:bias_decomp_boot} n = p = 100, $\beta_A = 2$ all other $\beta$s = 0. All covariates generated under independence}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{bias_decomp}
+    \caption{\label{Fig:bias_decomp} n = p = 100, $\beta_A = 2$ all other $\beta$s = 0. All covariates generated under independence}
+    \end{center}
+\end{figure}
+
+\subsection{More complex decompositions}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{bias_decomp_single_B}
+    \caption{\label{Fig:bias_decomp_single_B} n = p = 100, $\beta_A = 2$, $\beta_B = 0$, $\rho_{A,B} = 0.5$.  All other $\beta$s = 0 and  generated under independence}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{bias_decomp_2_groups}
+    \caption{\label{Fig:bias_decomp_2_groups} n = p = 100, $\beta_{A1} = \beta_{A2} = 2$, $\beta_{B1} = \beta{B2} = 0$, $\rho_{\beta{A_i},\beta{B_j}} = 0.5 \text{ if } i=j, \text{ otherwise } \rho_{\beta{A_i},\beta{B_j}} = 0$.  All other $\beta$s = 0 and  generated under independence}
+    \end{center}
+\end{figure}
+
+\subsection{Correlated signals}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{bias_decomp_same_corr_signal}
+    \caption{\label{Fig:bias_decomp_same_corr_signal} n = p = 100, $\beta_{A1} = \beta_{B1} = 2$, $\rho_{\beta{A_1},\beta{B_1}} = 0.5$.  All other $\beta$s = 0 and  generated under independence}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{bias_decomp_opp_signal}
+    \caption{\label{Fig:bias_decomp_opp_signal} n = p = 100, $\beta_{A1} = -\beta_{B1} = 2$, $\rho_{\beta{A_1},\beta{B_1}} = 0.5$.  All other $\beta$s = 0 and  generated under independence}
+    \end{center}
+\end{figure}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{bias_decomp_highcorr}
+    \caption{\label{Fig:bias_decomp_highcorr} n = p = 100, $\beta_{A1} = 2, \beta_{B1} = 0$, $\rho_{\beta{A_1},\beta{B_1}} = 0.99$.  All other $\beta$s = 0 and  generated under independence}
+    \end{center}
+\end{figure}
+
 
 \section{Back to the FCP}
 
@@ -84,12 +133,35 @@ However, it is the application to the MCP penalty that is of greatest interest. 
 
 \section{Other results}
 
+\subsection{Opposite direction}
+
 \begin{figure}[hbtp]
     \begin{center}
-    \includegraphics[width=\linewidth]{sim_gene}
-    \caption{\label{Fig:sim_gene} Covariates generated with AR corr with rho = 0.7, with 10 true non-zero $\beta$ values of decreasing magnitude all contiguous. Plot displays results from all 1000 simulations.}
+    \includegraphics[width=\linewidth]{sim_grp_opposite_dir}
+    \caption{\label{Fig:sim_grp_opposite_dir} n = p = 100, group sizes of 5, $\rho_{within} = 0.5$, $\rho_{between} = 0$. $V1_G1 = -V2_G1 = V3_G1 = 0.5$, and all other coefficients are 0.}
     \end{center}
 \end{figure}
+
+\begin{table}[hb]
+  \centering
+  \input{tab/sim_grp_opposite_dir_selection_freq}
+  \caption{\label{Tab:sim_grp_opposite_dir_selection_freq}Add a description}
+\end{table}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{sim_grp_opposite_dir_balanced}
+    \caption{\label{Fig:sim_grp_opposite_dir_balanced} n = p = 100, group sizes of 5, $\rho_{within} = 0.5$, $\rho_{between} = 0$. $V1_G1 = -V2_G1 = V3_G1 = -V4_G1 = 0.5$, and all other coefficients are 0.}
+    \end{center}
+\end{figure}
+
+\begin{table}[hb]
+    \centering
+    \input{tab/sim_grp_opposite_dir_balanced_selection_freq}
+    \caption{\label{Tab:sim_grp_opposite_dir_balanced_selection_freq}Add a description}
+  \end{table}
+
+\subsection{Small Betas (low selection Frequency)}
 
 \begin{figure}[hbtp]
     \begin{center}
@@ -98,6 +170,23 @@ However, it is the application to the MCP penalty that is of greatest interest. 
     \end{center}
 \end{figure}
 
+
+\subsection{Other previously seen sims}
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{sim_abn}
+    \caption{\label{Fig:sim_abn} Data generated with the same true values of $\beta$ as under the previous simulation, with now each non-zero $\beta$ is correlated with two null variables with exchangeable correlation and $\rho = 0.5$.}
+    \end{center}
+\end{figure}
+
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{sim_gene}
+    \caption{\label{Fig:sim_gene} Covariates generated with AR corr with rho = 0.7, with 10 true non-zero $\beta$ values of decreasing magnitude all contiguous. Plot displays results from all 1000 simulations.}
+    \end{center}
+\end{figure}
 
 \begin{figure}[hbtp]
     \begin{center}
@@ -118,13 +207,6 @@ However, it is the application to the MCP penalty that is of greatest interest. 
     \begin{center}
     \includegraphics[width=\linewidth]{sim_grp_same_dir}
     \caption{\label{Fig:sim_grp_same_dir} n = p = 100, $\rho_{V1, V2} = 0.5$ for $G1$ otherwise, $\rho_{V1, V2} = 0$. $V1_G1 = 0.8$, $V2_G1 = 0.2$, and all other coefficients are 0.}
-    \end{center}
-\end{figure}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=\linewidth]{sim_grp_opposite_dir}
-    \caption{\label{Fig:sim_grp_opposite_dir} n = p = 100, group sizes of 5, $\rho_{within} = 0.5$, $\rho_{between} = 0$. $V1_G1 = -V2_G1 = V3_G1 = 0.5$, and all other coefficients are 0.}
     \end{center}
 \end{figure}
 
