@@ -5,7 +5,7 @@ simulation_info <- list(
   simulation_function = "gen_data",
   simulation_arguments = list(
     n = 50, p = 100,
-    beta = c(rep(0.1, 50), rep(0, 50))
+    beta = c(rep(0.5, 50), rep(0, 50))
     # corr = "autoregressive", rho = 0.5
   )
 )
