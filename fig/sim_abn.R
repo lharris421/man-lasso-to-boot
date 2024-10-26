@@ -12,7 +12,8 @@ simulation_info <- list(
 variables_of_interest <- c("A1", "B1", "B2", "A3", "B5", "B6", "A5", "B9", "B10", "N1", "N2")
 
 ## Load data back in
-methods <- methods[c("pipe", "normal_approx", "debiased", "mcp_pipe", "pipe_mcp")]
+methods <- methods[c("pipe", "debiased", "pipe_mcp")]
+# methods <- methods[c("pipe", "normal_approx", "debiased", "mcp_pipe", "pipe_mcp")]
 results <- list()
 for (i in 1:length(methods)) {
   results[[names(methods)[i]]] <- indexr::read_objects(

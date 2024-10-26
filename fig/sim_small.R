@@ -39,7 +39,8 @@ results <- list()
 for (i in 1:length(methods)) {
   results[[names(methods)[i]]] <- indexr::read_objects(
     rds_path, 
-    c(function_name = "sim", methods[[i]], simulation_info)
+    c(function_name = "sim", methods[[i]], simulation_info),
+    print_hash = TRUE
   )$results %>%
     mutate(method = names(methods)[i])
 }

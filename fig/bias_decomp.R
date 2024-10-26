@@ -10,7 +10,7 @@ params <- list(
     n = 100, p = 100, a = 1, b = 0, rho = 0,
     beta = 2
   ),
-  script_name = "b_selection"
+  script_name = "bias_decomposition"
 )
 
 res <- indexr::read_objects(rds_path, params)
