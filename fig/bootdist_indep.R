@@ -32,6 +32,7 @@ ggp <- ggplot(df, aes(x = partial_correlations)) +
   geom_vline(aes(xintercept = pipe_lower, col = "Normal Approx"), linetype = "dashed") +
   geom_vline(aes(xintercept = pipe_upper, col = "Normal Approx"), linetype = "dashed") +
   geom_vline(aes(xintercept = pipe_estimate, col = "Original Zj"), lwd = 1.5) +
+  geom_vline(aes(xintercept = median(boot_data), col = "Median Boot"), lwd = 1.5) +
   geom_vline(aes(xintercept = boot_ci[1], col = "Debiased (Boot)"), linetype = "dotted") +
   geom_vline(aes(xintercept = boot_ci[2], col = "Debiased (Boot)"), linetype = "dotted") +
   labs(
@@ -45,6 +46,7 @@ ggp <- ggplot(df, aes(x = partial_correlations)) +
     values = c(
       "Normal Approx" = "red",
       "Original Zj" = "black",
+      "Median Boot" = "grey",
       "Debiased (Boot)" = "blue"
     )
   ) +

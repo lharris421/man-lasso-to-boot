@@ -12,7 +12,7 @@ simulation_info <- list(
 variables_of_interest <- glue('V{stringr::str_pad(1:10, width = 3, pad = "0")}')
 
 ## Load data back in
-methods <- methods[c("debiased", "normal_approx", "pipe")]
+methods <- methods[c("debiased", "normal_approx", "pipe", "relaxed_lasso")]
 results <- list()
 for (i in 1:length(methods)) {
   results[[names(methods)[i]]] <- indexr::read_objects(

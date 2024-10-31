@@ -14,7 +14,7 @@ simulation_info <- list(
 variables_of_interest <- glue('V{stringr::str_pad(c(1, 2, 3, 1500, 1499, 1501, 1800, 2100, 2400, 2700, 2998, 2999, 3000), width = 4, pad = "0")}')
 
 ## Load data back in
-methods <- methods[c("mcp_pipe", "pipe", "pipe_mcp")]
+methods <- methods[c("pipe", "pipe_mcp", "relaxed_lasso", "mcp_pipe")]
 results <- list()
 for (i in 1:length(methods)) {
   results[[names(methods)[i]]] <- indexr::read_objects(

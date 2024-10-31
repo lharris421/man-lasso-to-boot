@@ -26,7 +26,10 @@ methods <- list(
   "pipe"  = list(method = "pipe_ncvreg", method_arguments = list()),
   "pipe_mcp"  = list(method = "pipe_ncvreg", method_arguments = list(penalty = "MCP")),
   "normal_approx"  = list(method = "pipe_ncvreg", method_arguments = list(original_n = TRUE)),
-  "mcp_pipe"   = list(method = "posterior", method_arguments = list(penalty = "MCP", studentize = FALSE, adjust_ss = TRUE))
+  "mcp_pipe"   = list(method = "posterior", method_arguments = list(penalty = "MCP", studentize = FALSE, adjust_ss = TRUE)),
+  "debiased_centered" = list(method = "boot_ncv", method_arguments = list(penalty = "lasso", submethod = "debiased_centered")),
+  "relaxed_lasso"  = list(method = "pipe_ncvreg", method_arguments = list(profile = TRUE)),
+  "relaxed_reest" = list(method = "pipe_ncvreg", method_arguments = list(profile = TRUE, reest_sigma = TRUE))
 )
 for (i in 1:length(methods)) {
   methods[[i]]$method_arguments["alpha"] <- 0.05

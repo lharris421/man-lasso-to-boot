@@ -11,7 +11,7 @@ simulation_info <- list(
 
 
 ## Load data back in
-methods <- methods[c("debiased", "normal_approx", "pipe")]
+methods <- methods[c("debiased", "debiased_centered", "normal_approx", "pipe", "relaxed_lasso")]
 results <- list()
 for (i in 1:length(methods)) {
   results[[names(methods)[i]]] <- indexr::read_objects(

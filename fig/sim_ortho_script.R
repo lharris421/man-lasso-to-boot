@@ -11,7 +11,7 @@ methods$lp$method_arguments$original <- NULL
 variables_of_interest <- glue('V{stringr::str_pad(1:10, width = 3, pad = "0")}')
 
 ## Load data back in
-methods <- methods[c("normal_approx", "debiased")]
+methods <- methods[c("normal_approx", "debiased", "pipe", "relaxed_lasso")]
 results <- list()
 for (i in 1:length(methods)) {
   #args <- c(methods[[i]], simulation_info)

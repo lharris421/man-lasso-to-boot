@@ -10,6 +10,20 @@ In the exploration of sampling from the FCP while bootstrapping we naturally arr
 
 However, even in the case of simple independence, the coverage rate is below nominal and is not robust to alternative correlation structures among the predictors. It appears that bootstrapping is rather susceptible to this correlation induced bias. Even just a simple normal approximation using the expression above gives better coverage performance. The normal approximation intervals are also generally narrower, suggesting that the issue with the bootstrap revolves around how it is affected by bias.
 
+\section{Another alternative method}
+
+\as{
+  \begin{aligned}
+  &\text{Normal Approx (used to construct posts in man 1): } &z_j|\bb_{-j} \sim N(\beta_j, \frac{\sigma^2}{x_j^T x_j} ) \\
+  &\text{Pipe: } &\bar{\beta}_j | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j}) \\
+  &\text{Relaxed: } &\hat{\beta_j}^* | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j}) \\
+  \end{aligned}
+}
+
+Where $z_j = \bar{\beta}_j = \frac{x_j^T(\y - \X_{-j}\hat{\beta}_{-j})}{x_j^T x_j}$, and $\hat{\beta_j}^* = \frac{x_j^T Q_{S_j} \y}{x_j^T Q_{S_j} x_j}$
+
+With the relaxed idea in mind, the debiased lasso is notably an extension of this while also retaining a similarity to PIPE. Specifically, the debiased lasso uses the residuals from the original fit but instead of projecting $\x_j$ onto the active features as the relaxed does, this is where the method gets more involved by using additional lasso fits to project $\x_j$ onto the other features.
+
 \begin{figure}[hbtp]
     \begin{center}
     \includegraphics[width=\linewidth]{sim_ortho_script}
