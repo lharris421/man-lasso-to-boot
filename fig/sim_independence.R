@@ -18,10 +18,10 @@ for (i in 1:length(methods)) {
   results[[names(methods)[i]]] <- indexr::read_objects(
     rds_path, 
     c(function_name = "sim", methods[[i]], simulation_info)
+    # c(methods[[i]], simulation_info)
   )$results %>%
     mutate(method = names(methods)[i])
 }
-
 
 pdf("./fig/sim_independence.pdf", height = 5, width = 7)
 ci_coverage_plot(results, variables_of_interest)

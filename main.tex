@@ -10,6 +10,8 @@ In the exploration of sampling from the FCP while bootstrapping we naturally arr
 
 However, even in the case of simple independence, the coverage rate is below nominal and is not robust to alternative correlation structures among the predictors. It appears that bootstrapping is rather susceptible to this correlation induced bias. Even just a simple normal approximation using the expression above gives better coverage performance. The normal approximation intervals are also generally narrower, suggesting that the issue with the bootstrap revolves around how it is affected by bias.
 
+\newpage
+
 \section{Another alternative method}
 
 \as{
@@ -23,6 +25,10 @@ However, even in the case of simple independence, the coverage rate is below nom
 Where $z_j = \bar{\beta}_j = \frac{x_j^T(\y - \X_{-j}\hat{\beta}_{-j})}{x_j^T x_j}$, and $\hat{\beta_j}^* = \frac{x_j^T Q_{S_j} \y}{x_j^T Q_{S_j} x_j}$
 
 With the relaxed idea in mind, the debiased lasso is notably an extension of this while also retaining a similarity to PIPE. Specifically, the debiased lasso uses the residuals from the original fit but instead of projecting $\x_j$ onto the active features as the relaxed does, this is where the method gets more involved by using additional lasso fits to project $\x_j$ onto the other features.
+
+\newpage
+
+\section{Inherent bias in bootsrapping}
 
 \begin{figure}[hbtp]
     \begin{center}
@@ -62,6 +68,8 @@ While not the motivation for PIPE, as it turns out, an adjustment to this normal
 
 The beauty of this construction is that the variance of the PIPE estimator is inherently related to the bias of the estimator. So, while no attempt is made to correct for the bias, in cases where the bias is likely large, so too is the resulting variance.
 
+\newpage
+
 \section{Digging into bootstrap bias}
 
 \subsection{Single signal variable, no correlation}
@@ -89,6 +97,8 @@ This also just suggests (as is the case for the rest of the decomps) that lookin
     \end{center}
 \end{figure}
 
+\newpage
+
 \subsection{More complex decompositions}
 
 \begin{figure}[hbtp]
@@ -104,6 +114,8 @@ This also just suggests (as is the case for the rest of the decomps) that lookin
     \caption{\label{Fig:bias_decomp_2_groups} n = p = 100, $\beta_{A1} = \beta_{A2} = 2$, $\beta_{B1} = \beta{B2} = 0$, $\rho_{\beta{A_i},\beta{B_j}} = 0.5 \text{ if } i=j, \text{ otherwise } \rho_{\beta{A_i},\beta{B_j}} = 0$.  All other $\beta$s = 0 and  generated under independence}
     \end{center}
 \end{figure}
+
+\newpage
 
 \subsection{Correlated signals}
 
@@ -128,22 +140,7 @@ This also just suggests (as is the case for the rest of the decomps) that lookin
     \end{center}
 \end{figure}
 
-
-\section{Back to the FCP}
-
-As noted previously, when bootstrapping the lasso, the previously recommended fix was to sample from the FCP when $\bh_j = 0$. As one could imagine, throwing out the bootstrap and just constructing intervals from these posteriors results in insufficient coverage. Unsurprising as this serves as a short cut to a fully Bayesian approach. In efforts to obtain computational efficiency, the intervals are too narrow as they do not account for the fact that the FCPs are being constructed conditioning on $\bb_{-j} = \bbh_{-j}$. Doing results in $L(\beta_j|\bbh_{-j}, \lambda, \sigma^2) \propto \exp(-\frac{n}{2\sigma^2}(\beta_{j}^2 - 2 z_{j} \beta_{j}))$.
-
-PIPE can be interpreted as taking this a step further by accounting for the fact that we are conditioning on the selected model, specifically $\hat{S}_j$. 
-
-\logan{Well kinda, is more like a partially conditional likelihood? Or a profile likelihood based on the kkt conditions? I haven't had luck in deriving it yet.}
-
-This results in the following likelihood: $L(\beta_j|\bbh_{-j}, \hat{S}_j, \lambda, \sigma^2) \propto \exp(-\frac{\x_j^T \Q_{\hat{S}_j} \x_j}{2\sigma^2}(\beta_{j}^2 - 2 \bar{\beta}_{j} \beta_{j}))$. 
-
-Building off this likelihood instead of the fully conditional one, we can build posterior distributions that are adjusted to account for the conditioning on the selected model.
-
-In terms of the average coverage properties outlined in \logan{cite first paper}, it behaves very similarly to the proposed methodological fix. However, it works in about a fraction of the time and is more robust to correlation among predictors due to its construction. 
-
-However, it is the application to the MCP penalty that is of greatest interest. Specifically to use this as an alternative option to the PIPE estimator itself.
+\newpage
 
 \section{Other results}
 
@@ -184,8 +181,6 @@ However, it is the application to the MCP penalty that is of greatest interest. 
     \end{center}
 \end{figure}
 
-
-\subsection{Other previously seen sims}
 
 \begin{figure}[hbtp]
     \begin{center}
@@ -230,3 +225,31 @@ However, it is the application to the MCP penalty that is of greatest interest. 
     \caption{\label{Fig:ssim_grp_same_dir_same_eff} n = p = 100, group sizes of 4, $\rho_{G1} = 0.5$ but zero for all other groups and $\rho_{between} = 0$. $V1_G1 = V2_G1 = V3_G1 = 1$, and all other coefficients are 0.}
     \end{center}
 \end{figure}
+
+\newpage
+\section{Average coverage boot alternatives}
+
+As noted previously, when bootstrapping the lasso, the previously recommended fix was to sample from the FCP when $\bh_j = 0$. As one could imagine, throwing out the bootstrap and just constructing intervals from these posteriors results in insufficient coverage. Unsurprising as this serves as a short cut to a fully Bayesian approach. In efforts to obtain computational efficiency, the intervals are too narrow as they do not account for the fact that the FCPs are being constructed conditioning on $\bb_{-j} = \bbh_{-j}$. Doing results in $L(\beta_j|\bbh_{-j}, \lambda, \sigma^2) \propto \exp(-\frac{n}{2\sigma^2}(\beta_{j}^2 - 2 z_{j} \beta_{j}))$.
+
+PIPE can be interpreted as taking this a step further by accounting for the fact that we are conditioning on the selected model, specifically $\hat{S}_j$. 
+
+\logan{Well kinda, is more like a partially conditional likelihood? Or a profile likelihood based on the kkt conditions? I haven't had luck in deriving it yet.}
+
+This results in the following likelihood: $L(\beta_j|\bbh_{-j}, \hat{S}_j, \lambda, \sigma^2) \propto \exp(-\frac{\x_j^T \Q_{\hat{S}_j} \x_j}{2\sigma^2}(\beta_{j}^2 - 2 \bar{\beta}_{j} \beta_{j}))$. 
+
+Building off this likelihood instead of the fully conditional one, we can build posterior distributions that are adjusted to account for the conditioning on the selected model.
+
+In terms of the average coverage properties outlined in \logan{cite first paper}, it behaves very similarly to the proposed methodological fix. However, it works in about a fraction of the time and is more robust to correlation among predictors due to its construction. 
+
+However, it is the application to the MCP penalty that is of greatest interest. Specifically to use this as an alternative option to the PIPE estimator itself.
+\begin{table}[hbtp]
+    \centering
+    \input{tab/distribution_table}
+    \caption{\label{Tab:dist_beta} PIPE Based Posterior}
+  \end{table}
+
+\begin{table}[hbtp]
+\centering
+\input{tab/distribution_table_relaxed}
+\caption{\label{Tab:dist_beta_relaxed} Relaxed Lasso Based Posterior}
+\end{table}

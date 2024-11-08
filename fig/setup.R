@@ -1,8 +1,9 @@
 rm(list=ls())
 
 res_dir <- switch(Sys.info()['user'],
-                  'pbreheny' = '~/res/lasso-to-boot',
-                  'loganharris' = '../lasso-to-boot')
+                  'pbreheny' = '~/res/lasso-boot',
+                  'loganharris' = '../lasso-boot')
+
 devtools::load_all(res_dir)
 rds_path <- glue::glue("{res_dir}/rds/")
 
@@ -23,13 +24,21 @@ background_colors <- c("#E2E2E2", "#F5F5F5")
 
 methods <- list(
   "debiased" = list(method = "boot_ncv", method_arguments = list(penalty = "lasso", submethod = "debiased")),
+  "debiased_fma" = list(method = "boot_ncv", method_arguments = list(penalty = "lasso", submethod = "debiased", reselect_lambda = TRUE)),
   "pipe"  = list(method = "pipe_ncvreg", method_arguments = list()),
   "pipe_mcp"  = list(method = "pipe_ncvreg", method_arguments = list(penalty = "MCP")),
   "normal_approx"  = list(method = "pipe_ncvreg", method_arguments = list(original_n = TRUE)),
   "mcp_pipe"   = list(method = "posterior", method_arguments = list(penalty = "MCP", studentize = FALSE, adjust_ss = TRUE)),
+  "mcp_cond"   = list(method = "posterior", method_arguments = list(penalty = "MCP", studentize = FALSE, adjust_ss = TRUE, relaxed = TRUE)),
   "debiased_centered" = list(method = "boot_ncv", method_arguments = list(penalty = "lasso", submethod = "debiased_centered")),
   "relaxed_lasso"  = list(method = "pipe_ncvreg", method_arguments = list(profile = TRUE)),
-  "relaxed_reest" = list(method = "pipe_ncvreg", method_arguments = list(profile = TRUE, reest_sigma = TRUE))
+  "relaxed_reest" = list(method = "pipe_ncvreg", method_arguments = list(profile = TRUE, reest_sigma = TRUE)),
+  "lasso_boot" = list(method = "boot_ncv", method_arguments = list(penalty = "lasso", submethod = "hybrid")),
+  "mcp_boot" = list(method = "boot_ncv", method_arguments = list(penalty = "MCP", submethod = "hybrid")),
+  "lasso" = list(method = "posterior", method_arguments = list(penalty = "lasso")),
+  "mcp"   = list(method = "posterior", method_arguments = list(penalty = "MCP")),
+  "lasso_relaxed" = list(method = "posterior", method_arguments = list(penalty = "lasso", relaxed = TRUE)),
+  "mcp_relaxed"   = list(method = "posterior", method_arguments = list(penalty = "MCP", relaxed = TRUE))
 )
 for (i in 1:length(methods)) {
   methods[[i]]$method_arguments["alpha"] <- 0.05
