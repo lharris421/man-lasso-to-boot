@@ -61,3 +61,6 @@ rsconnect/
 *.log
 *.out
 *.gz
+
+# ignore .tex files in tab folder
+tab/*.tex
