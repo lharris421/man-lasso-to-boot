@@ -63,6 +63,6 @@ final_plot <- coverage_data %>%
 
 # Print the plot
 
-pdf("./fig/correlation.pdf", width = 8, height = 4)
+pdf("./fig/correlation_relaxed_posterior.pdf", width = 8, height = 4)
 final_plot
 dev.off()
