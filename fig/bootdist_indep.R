@@ -29,12 +29,12 @@ boot_ci <- quantile(boot_data, c(0.025, 0.975))
 # Create the plot using ggplot2
 ggp <- ggplot(df, aes(x = partial_correlations)) +
   geom_histogram(binwidth = 0.05, fill = "grey", color = "white") +
-  geom_vline(aes(xintercept = pipe_lower, col = "Normal Approx"), linetype = "dashed") +
-  geom_vline(aes(xintercept = pipe_upper, col = "Normal Approx"), linetype = "dashed") +
+  # geom_vline(aes(xintercept = pipe_lower, col = "Normal Approx"), linetype = "dashed") +
+  # geom_vline(aes(xintercept = pipe_upper, col = "Normal Approx"), linetype = "dashed") +
   geom_vline(aes(xintercept = pipe_estimate, col = "Original Zj"), lwd = 1.5) +
-  geom_vline(aes(xintercept = median(boot_data), col = "Median Boot"), lwd = 1.5) +
-  geom_vline(aes(xintercept = boot_ci[1], col = "Debiased (Boot)"), linetype = "dotted") +
-  geom_vline(aes(xintercept = boot_ci[2], col = "Debiased (Boot)"), linetype = "dotted") +
+  geom_vline(aes(xintercept = median(boot_data), col = "Median Bootstrap"), lwd = 1.5) +
+  geom_vline(aes(xintercept = boot_ci[1], col = "Debiased Bootstrap"), linetype = "dotted") +
+  geom_vline(aes(xintercept = boot_ci[2], col = "Debiased Bootstrap"), linetype = "dotted") +
   labs(
     title = "",
     x = "Partial Correlations",
@@ -44,10 +44,10 @@ ggp <- ggplot(df, aes(x = partial_correlations)) +
   scale_color_manual(
     name = "Estimates and CIs",
     values = c(
-      "Normal Approx" = "red",
+     #  "Normal Approx" = "red",
       "Original Zj" = "black",
-      "Median Boot" = "grey",
-      "Debiased (Boot)" = "blue"
+      "Median Bootstrap" = "red",
+      "Debiased Bootstrap" = "blue"
     )
   ) +
   theme(legend.position = "top")

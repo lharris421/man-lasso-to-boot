@@ -1,17 +1,12 @@
 source("./fig/setup.R")
 
-for (i in 1:length(methods)) {
-  methods[[i]]$method_arguments["alpha"] <- 0.05
-}
-
 simulation_info <- list(seed = 1234, iterations = 1000,
                         simulation_function = "gen_data_distribution", simulation_arguments = list(
-                          n = 100, J = 50, K = 2, beta = c(0.8, 0.2, rep(0, 98)), distribution = "group",
-                          J1 = 1, K1 = 2, rho.g = 0.5, rho.gz = 0 # K1 doesn't actually matter here (not used)
+                          n = 400, p = 100, p1 = 10, family = "binomial"
                         ), script_name = "distributions")
 
 ## Load data back in
-methods <- methods[c("pipe", "relaxed_lasso")]
+methods <- methods[c("pipe_binomial")]
 
 files <- expand.grid(
   "method" = names(methods),
@@ -28,7 +23,7 @@ for (i in 1:nrow(files)) {
     mutate(method = files[i,,drop=FALSE] %>% pull(method))
 }
 
-variables_of_interest <- c("G01_V1", "G01_V2", "G02_V1", "G02_V2", "G40_V1", "G40_V2", "G45_V1", "G45_V2", "G50_V1", "G50_V2")
-pdf("./fig/sim_grp_same_dir.pdf", height = 5, width = 7)
+variables_of_interest <- glue('V{stringr::str_pad(1:14, width = 3, pad = "0")}')
+pdf("./fig/sim_binomial.pdf", height = 4, width = 7)
 ci_coverage_plot(results, variables_of_interest)
 dev.off()

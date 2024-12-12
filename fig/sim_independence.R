@@ -1,28 +1,35 @@
 source("./fig/setup.R")
 
-## Specify the simulation information
-simulation_info <- list(
-  simulation_function = "gen_data",
-  simulation_arguments = list(
-    n = 100, p = 100,
-    beta = c(-2, 2, -1, 1, -0.5, 0.5, -0.5, 0.5, rep(0, 92))
-  )
-)
-
-variables_of_interest <- glue('V{stringr::str_pad(1:10, width = 3, pad = "0")}')
-
-## Load data back in
-methods <- methods[c("debiased", "normal_approx", "pipe", "relaxed_lasso")]
-results <- list()
 for (i in 1:length(methods)) {
-  results[[names(methods)[i]]] <- indexr::read_objects(
-    rds_path, 
-    c(function_name = "sim", methods[[i]], simulation_info)
-    # c(methods[[i]], simulation_info)
-  )$results %>%
-    mutate(method = names(methods)[i])
+  methods[[i]]$method_arguments["alpha"] <- 0.05
 }
 
-pdf("./fig/sim_independence.pdf", height = 5, width = 7)
+simulation_info <- list(seed = 1234, iterations = 1000,
+                        simulation_function = "gen_data_distribution", simulation_arguments = list(
+                          n = 100, p = 100,
+                          beta = c(-2, 2, -1, 1, -0.5, 0.5, -0.5, 0.5, rep(0, 92))
+                        ), script_name = "distributions")
+
+## Load data back in
+methods <- methods[c("pipe", "relaxed_lasso", "debiased", "lasso_proj")]
+
+files <- expand.grid(
+  "method" = names(methods),
+  stringsAsFactors = FALSE
+)
+
+results <- list()
+for (i in 1:nrow(files)) {
+  
+  results[[i]] <- indexr::read_objects(
+    rds_path,
+    c(methods[[files[i,"method"]]], simulation_info)
+  ) %>%
+    mutate(method = files[i,,drop=FALSE] %>% pull(method))
+}
+
+
+variables_of_interest <- glue('V{stringr::str_pad(1:10, width = 3, pad = "0")}')
+pdf("./fig/sim_independence.pdf", height = 4, width = 7)
 ci_coverage_plot(results, variables_of_interest)
 dev.off()
