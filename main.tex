@@ -188,11 +188,12 @@ The lasso is a popular penalized regression method that applies an $L_1$ penalty
 
 Recently, however, we have shown that a simplified projection based approach does well in obtaining CIs that have good coverage. We use the word simplified here to draw contrast to other debiased methods which could also be considered projection based but whose projections are more involved. These more complicated procedures 1) are computationally expensive and 2) are better thought of as new models rather than inferential procedures for the lasso. PIPE proposed by \logan{CITE PIPE} and its confidence intervals explored by \logan{Manuscript 2} are both computationally efficient and retain a clear connection back to the original lasso model they are constructed from. The being said, PIPE CIs have no guarantee they will contain the original lasso estimate. While PIPE estimates are not actively debiased, they are still debiased relative to their respective lasso point estimates, as their debiasing all comes through a removal of the lasso penalty. 
 
-\begin{table}[hbtp]
-    \centering
+\begin{figure}[hbtp]
+    \begin{center}
     \includegraphics[width=\linewidth]{laplace_comparison}
-    \caption{\label{Fig:laplace_comparison} Laplace distributed betas}
-\end{table}
+    \caption{\label{Fig:laplace_comparison} Hybrid vs pipe}
+    \end{center}
+\end{figure}
     
 
 \logan{CITE First manuscript} provides a new perspective on coverage properties for high dimensional CIs (HDCIs). Instead of requiring HDCIs to have proper coverage for each model parameter individually we instead proposed that average coverage may be a more reasonable target (especially if one wants the intervals to be around the lasso estimates). In this manuscript, the focus was around obtaining bootstrap CIs that met such definition. In this manuscript, the authors suggested a ``hybrid bootstrap'' approach where the sampling was done from the full conditional posterior (FCP) when $\bh_j = 0$. In this manuscript, we also briefly mention that always sampling from the FCP is far too conservative. This is understandable as uncertainty is essentially being double accounted for by the bootstrap and the sampling from the FCP. 
@@ -213,11 +214,12 @@ In terms of the average coverage properties outlined in \logan{cite first paper}
     \caption{\label{Tab:dist_beta} PIPE Based Posterior}
 \end{table}
 
-\begin{table}[hbtp]
-    \centering
+\begin{figure}[hbtp]
+    \begin{center}
     \includegraphics[width=\linewidth]{correlation_pipe_posterior}
-    \caption{\label{Fig:corr_pipe} PIPE Based Posterior}
-\end{table}
+    \caption{\label{Fig:correlation_pipe_posterior} PIPE Posterior}
+    \end{center}
+\end{figure}
     
 \subsection{Alternative Penalty Choices}
 
