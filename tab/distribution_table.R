@@ -9,6 +9,7 @@
 ## Setup
 source("./fig/setup.R")
 
+methods <- list("lasso"   = list(method = "posterior", method_arguments = list(penalty = "lasso")))
 simulation_info <- list(seed = 1234, iterations = 1000,
                         simulation_function = "gen_data_distribution", simulation_arguments = list(
                           p = 100, SNR = 1

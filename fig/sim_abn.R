@@ -10,8 +10,11 @@ simulation_info <- list(seed = 1234, iterations = 1000,
                  beta = c(-2, 2, -1, 1, -0.5, 0.5, -0.5, 0.5)
                ), script_name = "distributions")
 
+
+
 ## Load data back in
-methods <- methods[c("pipe", "relaxed_lasso", "lasso_proj")]
+methods <- methods[c("pipe")]
+# methods <- methods[c("pipe", "debiased")]
 ns <- c(100)
 distributions <- c( "abn")
 

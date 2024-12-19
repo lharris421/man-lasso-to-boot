@@ -10,7 +10,7 @@ simulation_info <- list(seed = 1234, iterations = 1000,
                         ), script_name = "distributions")
 
 ## Load data back in
-methods <- methods[c("relaxed_lasso", "pipe")]
+methods <- methods[c("pipe")]
 
 files <- expand.grid(
   "method" = names(methods),
@@ -28,7 +28,7 @@ for (i in 1:nrow(files)) {
 }
 
 
-variables_of_interest <- glue('V{stringr::str_pad(c(1, 2, 3, 1500, 1499, 1501, 1800, 2100, 2400, 2700, 2998, 2999, 3000), width = 4, pad = "0")}')
+variables_of_interest <- glue('V{stringr::str_pad(c(1499, 1500, 1501, 1799, 1800, 1801), width = 4, pad = "0")}')
 pdf("./fig/sim_ldpe.pdf", height = 5, width = 7)
 ci_coverage_plot(results, variables_of_interest)
 dev.off()

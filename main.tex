@@ -1,45 +1,35 @@
-\section{Idea}
-
-\subsection{Confidence Intervals: What do you want from me?}
-
-Not a paper, just a short introductory chapter.
-
-A discussion of what we want from confidence intervals, why this is easy in non-high dimensional cases and what we have to sacrifice in high dimensions.
-
-\subsection{Sampling from a normal-laplace posterior}
-
-Expand on the details a bit more, show visualizations that help depict what is going on?
-
-\subsection{This manuscript}
-
-- Introduce debiased bootstrap
-- Explain why it has problems
-- Suggest PIPE intervals
-- Suggest relaxed lasso intervals
-- Compare methods ??
-
-\subsection{Next manuscript}
-
-Combine ideas from first and second manuscript to create computationally efficient and robust intervals which have good ``on average'' coverage by creating a pipe based posterior (pipe not relaxed lasso so that the intervals are still centered on the original lasso estimate.)
-
 \section{Introduction}
 
 We have previously shown that although the bootstrap fails in the traditional sense of producing confidence intervals, that with a tweak in methodology and perspective that one can arrive at confidence intervals with reasonable coverage behaviors while retaining faithfulness to the lasso model fit. 
 
 The methodological fix revolves around sampling from the full conditional posterior (FCP) when $\hat{\beta}_j = 0$. By replacing this bootstrap sample with a draw from the FCP, we can avoid having a point mass at 0 as well as obtain bootstrapped CIs that have reasonable widths and average coverage. This turns out to also be rather robust to the initial assumptions made.
 
-The main hang up with gaining buy in for this interval producing method is that it under covers larger values of $\beta$, presumably the ones the practitioner cares the most about. This flaw is inherent to constructing intervals around biased estimators which is why much focus has been placed using the lasso as a conduit for producing inference about the population parameter. That is, fitting a lasso model then using a debiasing procedure to construct confidence intervals.
+The main hang up with gaining acceptance for this interval producing method is that it under covers larger values of $\beta$, presumably the coefficients the practitioner cares the most about. This ``flaw'' is inherent to constructing intervals around biased estimators which is why much focus has been placed using the lasso as a conduit for producing inference about the population parameter. That is, fitting a lasso model then using a debiasing procedure to construct confidence intervals that have good average coverage on the true population parameter.
 
-In the exploration of sampling from the FCP while bootstrapping we naturally arrived at the estimator $z_j = \frac{1}{n}\x_j^T\r_{-j}$ as this is at the core of the FCP and in part determines, along with $\lambda$, where the FCP will be centered. Additionally, in the final penalized regression model, it is this value that the penalty is applied to to arrive at each $\bh_j$. Or in other words, if $\bh_j = P(z_j)$,  $z_j = P^{-1}(\bh_j)$. This raises the natural question, what if instead of bootstrapping the lasso estimates we sample the unpenalized estimator. This initially appears like it should perform well and is very simple to estimate. In the non-orthogonal case, $z_j = \beta^*_j + \frac{1}{n}\x_j^T \epsilon + \frac{1}{n}\x_j^T \X_{-j}(\bb^*_{-j} - \bbh_{-j})$. Under the assumption of iid errors, this suggests that $z_j$ is normally distributed around $\beta^*_j$ plus some bias that depends on the correlation between $\x_j$ and the other covariates and the bias of the estimates for $\bb_{-j}$. That is, the direct bias from penalization is removed. To understand the bias that is still introduced, consider wlg a situation where p = 2, $\beta_1 > 0$, $\beta_2 = 0$, and $\frac{1}{n}\x_1^T\x_2 = \rho > 0$. $z_1$ will be biased towards zero then if $\bh_2 > 0$. If the sample correlation is low or the estimates are reasonably close to the true $\beta$ values, then this bias should be minimal. Additionally, one might expect that the bootstrapping this estimator in high dimensions would help capture this uncertainty about the estimate leading to a certain level of robustness.
+Although debiased intervals have been the main focus, there are few methods that have been proposed for constructing such individual coverage intervals and the few that we are aware of have an unclear relation back to the original lasso model fit. In particular are projection based (debiased lasso) methods proposed by \citep{ZhangZhang2014, Javanmard2014}. Their bootstrap extensions was compared the the Hybrid bootstrap proposed in the previous chapter. Another approach which was also considered in the previous chapter was selective inference proposed by \citep{LeeEtAl2016}, however, we avoid considering this a ``debiased'' interval as its motivation comes from a different angle. In this manuscript, we suggest a different estimator: the correlations with the partial residuals from the lasso model fit. Using this has a more direct link back to the original model fit and consider two ways to use it to construct confidence intervals: one applying work from \logan{PIPE} and the other taking a bootstrap based approach.
 
-However, even in the case of simple independence, the coverage rate is below nominal and is not robust to alternative correlation structures among the predictors. It appears that bootstrapping is rather susceptible to this correlation induced bias. 
+We do not compare back to the debiased lasso methods here, but rather leave such comparisons as future work. Our focus in this manuscript is a comparison between bootstrap and non-bootstrap approaches with the goal of highlighting where individual methods' strengths and weaknesses. What we show is that the PIPE CIs are unequivocally superior. 
 
-\section{Debiased Bootstrap}
+Additionally, we focus on lasso-penalized linear regression, however, both methods are able to be extended to other sparsity inducing penalties and GLMs. 
 
-Let $B$ represent the total number of bootstrap datasets generated and let $\boldsymbol{\X}^b$ and $\boldsymbol{\y}^{b}$ refer to the $b^{th}$ bootstrap sample. Similarly, let $\hat{\beta}^b_j$ refer to the estimate for $\beta_j$ from the lasso fit to $\boldsymbol{\X}^b$ and $\boldsymbol{\y}^b$ at a specified value of $\lam$. The Debiased bootstrap is easy to implement:
+\section{Methods}
+
+\subsection{Partial Correlations}
+
+The estimator of focus in this manuscript is the partial correlation which we define here. 
+
+In this manuscript, we assume that $\X$ has been standardized s.t. $\x_j^T\x_j = n$. Once $\lambda$ is selected, $\bb_{-j}$ is set equal to $\hat{\bb}_{-j}(\lambda)$ and $\r_{j}$, the partial residuals, are then defined as $\y - \X_{-j}\hat{\bb}_{-j}(\lambda)$. Then, we can define our debiased estimator as $z_j = \frac{1}{n}\x_j^T\r_{-j}$. We use $z_j$ here to keep consistent with the first chapter, however, it is identical in its construction to the PIPE estimator, denoted $\bar{\beta}_j$. It is important to realize that $\bh_j = S(z_j|\lambda)$. That is, $z_j$ is just the unpenalized lasso estimator. 
+
+In general, it can be shown that $z_j = \beta^*_j + \frac{1}{n}\x_j^T \epsilon + \frac{1}{n}\x_j^T \X_{-j}(\bb^*_{-j} - \bbh_{-j})$. Under the assumption of iid errors, this suggests that $z_j$ is normally distributed around $\beta^*_j$ plus some bias that depends on the correlation between $\x_j$ and the other covariates and the bias of the estimates for $\bb_{-j}$. That is, the direct bias from penalization is removed. 
+
+\logan{Note sure on if to touch on how this was arrived at for pipe and through the FCP?}
+
+\subsection{Simple Debiased Bootstrap}
+
+The easiest method to use $z_j$ to produce CIs is to make no distributional assumptions\footnote{Aside from those implied by the bootstrap, of course...} and use a bootstrap. Let $B$ represent the total number of bootstrap datasets generated and let $\boldsymbol{\X}^b$ and $\boldsymbol{\y}^{b}$ refer to the $b^{th}$ bootstrap sample. Similarly, let $\hat{\beta}^b_j$ refer to the estimate for $\beta_j$ from the lasso fit to $\boldsymbol{\X}^b$ and $\boldsymbol{\y}^b$ at a specified value of $\lam$. The Simple Debiased Bootstrap (SDB) is easy to implement:
 
 \begin{enumerate}
-\item Perform CV using the original data to select $\lam$ and estimate $\sigma^2$
+\item Perform CV using the original data to select $\lam$
 \item For b $\in \lbrace 1, \ldots, B \rbrace$:
 \begin{enumerate}
 \item Obtain a pairs bootstrap sample, $\X^b$ and $\y^b$
@@ -52,17 +42,29 @@ Let $B$ represent the total number of bootstrap datasets generated and let $\bol
 \item For each $\beta_j$, compute the quantiles for $p_L = \alpha/2$ and $p_U = 1 - \alpha/2$ from the $j^{th}$ column of the draws to produce a final confidence interval estimate with significance level $\alpha$
 \end{enumerate}
 
+As noted in the previous chapter, there are various ways to perform the bootstrap and subsequently obtain confidence intervals \citep{Efron1994}. Again, here, we restrict our use to the pairs bootstrap and quantile intervals as this is a very common way of obtaining bootstrap confidence intervals and requires few assumptions.
+
+We refer to this method as the Simple Debiased Bootstrap to differentiate between the Debiased bootstrap approach proposed by \citep{Dezeure2017}.
+
+\subsection{PIPE}
+
+Alternatively, based on the decomposition of $z_j$ it may be expected that a normal approximation could be used to construct confidence intervals as well. In fact, in the first chapter, the FCP was constructed on the marginal likelihood $z_j | \bb_{-j} \sim \Norm(\beta_j, \frac{\sigma^2}{n})$. Unsurprisingly, confidence intervals using this normal approximation perform poorly with even the slightest introduction of correlation among the predictors. 
+
+Due to this lack of robustness, we turned our focus to a method that is still centered around this same estimate of $z_j$ but which accounts for the relationship among covariates. Coincidentally, previous work had already been done in exploring such a method. PIPE introduced by \logan{CITE PIPE}, derived the distribution of $z_j$ (known as the PIPE estimator, $\bar{\beta}_j$, in that manuscript) conditional on the selected model. Specifically, $\bar{\beta}_j | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j})$. Previously, the authors explored using the PIPE statistic for controlling FDR. In this manuscript, we shift focus to using this work to construct confidence intervals.
+
+The main idea behind pipe is constructing a test statistic by using approximate projection onto the column space of the active features. As previously mentioned, computing the PIPE estimator, $\bar{\beta}$, is equivalent to computing $z_j$, however in its construction, an alternative variance is suggested. Specifically, if $\hat{S} = \lbrace k: \hat{\beta}_k \neq  0 \rbrace$ and $\hat{S}_j = \hat{S} \text{ if } j \notin \hat{S}$ and $\hat{S}_j = \hat{S} - \lbrace j \rbrace \text{ if } j \in \hat{S}$  then let $\Q_{\hat{S}_j} = \I - \X_{\hat{S}_j}(\X_{\hat{S}_j}^T \X_{\hat{S}_j})^{-1} \X_{\hat{S}_j}^T$. The variance of $\bar{\beta}$ is $(\x_j^T \Q_{\hat{S}_j} \x_j)^{-1}\hat{\sigma}^2$. The logical interpretation of $\x_j^T \Q_{\hat{S}_j} \x_j$ is an adjusted sample size for inference on $\beta_j$ based on how much information in $\x_j$ is orthogonal to $\X_{\hat{S}_j}$. 
+
+\subsection{Comparing PIPE and Debiased}
+
+It is important to draw a distinction between these two interval producing methods as they are expected to behave differently due to their construction. Specifically, the Debiased Bootstrap is a model averaging approach as, by design, the model selected in each bootstrap iteration will be different. That is, SDB CIs are centered around model selection uncertainty. On the other hand, PIPE is focus on capturing the uncertainty about $z_j$ conditional on the selected features. Here, we use the terms features instead of model to indicate that the adjustment to the variance used in the CI construction for each $\beta_j$ is based purely on $\hat{S}_j$ and not $\bbhj$.
+
+As such, it is expected that PIPE may perform poorly when the the lasso does not select the true underlying model. Alternatively, such a scenario is where one might expect a bootstrap based approach to excel.
+
+\section{Results}
+
 The top row of Figure~\ref{Fig:sim_ortho} shows this method applied to a dataset with $n = p = 100$, $\X$ generated orthogonally, and with 8 true nonzero $\beta$s of decreasing magnitude. Even here, where we \emph{might} expect there to be no bias due to orthogonality, the larger covariates appear to have slight under coverage. However, overall, coverage appears to be satisfactory. The under coverage results because despite the data being generated orthogonally, this does not garuntee that the bootstrap samples will be. Even this small about of correlation that seeps in has a negative impact on coverage. This is notably amplified in Figure~\ref{Fig:sim_independence} where the simulation setup is the same but $\X$ is generated under independence rather than orthogonality. Figure~\ref{Fig:bootdist_indep} looks at a V002 for a single randomly selected simulation to provide a closer look at the bias occurring. We looked at several such examples, and this one is fairly representative. The bootstrap distribution looks fairly normal, but its center is not on the original estimate (from the original dataset) but is rather shifted towards zero.
 
-Perplexed by this phenomenon occurring in datasets with little to no correlation, we set out to see if we could come up with an intuitive explanation. Let us first describe what is occurring and then we will work to convince the reader. 
-
-The lasso penalty encourages an asymmetry in the random selection of null variables that causes a disproportionate bias of non-null variables towards zero. 
-
-Consider a simple simulation set up with $n = p = 100$ where there is 1 true non-null variable, A s.t. $\beta_A = 1$ that is correlated with a null variable B with $\rho = 0.5$. All other variables are generated independent of $A$ and each other. For now, ignore B. Consider first, using a bootstrap to estimate the correlation between A and some null variable which we will call N. What will you find? The bootstrap distribution of sample correlations is symmetric about 0 (some negligible variation). That is, it is not the correlation that is asymmetric. However, it is how the lasso penalty treats the correlation that is asymmetric. Lets continue with 2 specific scenarios we might encounter while bootstrapping. First assume in Scenario 1 that by chance $\rho_{A,N} = 0.1$. Since the correlation is positive, $\bh_N$, if not 0, is likely to be positive, inducing bias in $z_A$. Now, for scenario 2, assume by chance $\rho_{A,N} = -0.1$. Well, since the correlation is negative, the signal attributed to $\bh_N$ is likely to be negative. So, although the correlations were opposite of one another, the tendency in both is to cause bias in $z_A$ towards zero. The individual probability and effect of this occurring may be quite small, however, in high dimensional settings such as this example, when there are 98 N variables, the cumulative effect is quite large. 
-
-Note that it was previously mentioned that the bias for $z_j$ is: $\frac{1}{n}\x_j^T \epsilon + \frac{1}{n}\x_j^T \X_{-j}(\bb^*_{-j} - \bbh_{-j})$. We can break this down a bit further to apply to the scenario outlined above. $Bias_A = \frac{1}{n}\x_A^T \epsilon + \frac{1}{n}\x_A^T \x_{B}(\beta^*_{B} - \bh_{B}) + \frac{1}{n}\x_A^T \X_{N}(\bb^*_{N} - \bbh_{N})$. That is, we can decompose the bias into three parts. The first is the irreducible bias which comes from the chance correlation between $\x_A$ and the errors. The other two components attribute bias from the single B variable and all 98 N variables respectively. We can use this to visualize the previous example. By taking the simulation set up in the previous paragraph and repeating it 1000 times and each time saving the bias attributable to each of the components. More specifically, for each generated dataset, we can save both the decomposed bias for the estimates from the original data as well as take 1000 bootstrap replications and save the bias decomposition for each bootstrap replication. 
-
-Figure~\ref{Fig:bias_decomp_single_B_orig} is a density plot of the bias components for the estimates on the original datasets and Figure~\ref{Fig:bias_decomp_single_B_boot} contains the density plots for the median biases across the bootstrap replications. Figure~\ref{Fig:bias_decomp_single_B_boot} plots the density of the difference for each simulated dataset and highlights the bias from the N variables that sneaks in while bootstrapping.
+While the debiased bootstrap does provide reasonable results in many circumstances, we found that it is rather suceptible to correlation amoung the predictors as one might expect based on the previous demonstration. 
 
 \begin{figure}[hbtp]
     \begin{center}
@@ -82,76 +84,8 @@ The normal approximation still undercovers for nonzero $\beta$s but to a lesser 
 
 We can even hone in a bit further and look at the CIs compared to the original debiased estimate compared to the bootstrap draws for debiased:
 
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=0.65\linewidth]{bootdist_indep}
-    \caption{\label{Fig:bootdist_indep} The bootstrap distribution for a for variable 2 in plot 2 with CIs superimposed. }
-    \end{center}
-\end{figure}
-
 The phenomenon is not unique to this situation of independence either, even as correlation among the predictors is introduced, a place where the bootstrap would be expected to perform better than a normal approximation, this same pattern is still observed. We also see that the normal approximation suffers from bias as correlation among the predictors increases as well. So something more would be needed to make these interval estimates robust to correlation. 
 
-\logan{Personally, I'd like to just stop looking at it here... but then this paper seems disjointed}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=\linewidth]{bias_decomp_single_B_orig}
-    \caption{\label{Fig:bias_decomp_single_B_orig} n = p = 100, $\beta_A = 2$, $\beta_B = 0$, $\rho_{A,B} = 0.5$.  All other $\beta$s = 0 and  generated under independence}
-    \end{center}
-\end{figure}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=\linewidth]{bias_decomp_single_B_boot}
-    \caption{\label{Fig:bias_decomp_single_B_boot} n = p = 100, $\beta_A = 2$, $\beta_B = 0$, $\rho_{A,B} = 0.5$.  All other $\beta$s = 0 and  generated under independence}
-    \end{center}
-\end{figure}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=\linewidth]{bias_decomp_single_B}
-    \caption{\label{Fig:bias_decomp_single_B} n = p = 100, $\beta_A = 2$, $\beta_B = 0$, $\rho_{A,B} = 0.5$.  All other $\beta$s = 0 and  generated under independence}
-    \end{center}
-\end{figure}
-
-
-\section{PIPE Confidence Intervals}
-
-While the debiased bootstrap does provide reasonable results in many circumstances, we found that it is rather suceptible to correlation amoung the predictors as one might expect based on the previous demonstration. 
-
-Due to this undesirable behavior, we turned our focus to a method that is still centered around this same estimate of $z_j$ on the original dataset but that does not rely on the bootstrap. Coincidentally, previous work had already been done in exploring such a method. PIPE introduced by \logan{CITE PIPE}, derived the distribution of $z_j$ (known as the PIPE estimator in that manuscript) conditional on the selected model. Specifically, $\bar{\beta}_j | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j})$. Previously, the authors explored using the PIPE statistic for controlling FDR. In this manuscript, we shift focus to using this work to construct confidence intervals.
-
-The main idea behind pipe is constructing a test statistic by using approximate projection onto the column space of the active features. The computing the PIPE estimator, $\bar{\beta}$, is equivalent to computing $z_j$, however in its construction, an alternative variance is suggested. Specifically, if $\hat{S} = \lbrace k: \hat{\beta}_k \neq  0 \rbrace$ and $\hat{S}_j = \hat{S} \text{ if } j \notin \hat{S}$ and $\hat{S}_j = \hat{S} - \lbrace j \rbrace \text{ if } j \in \hat{S}$  then let $\Q_{\hat{S}_j} = \I - \X_{\hat{S}_j}(\X_{\hat{S}_j}^T \X_{\hat{S}_j})^{-1} \X_{\hat{S}_j}^T$. The variance of $\bar{\beta}$ is $(\x_j^T \Q_{\hat{S}_j} \x_j)^{-1}\hat{\sigma}^2$. The logical interpretation of $\x_j^T \Q_{\hat{S}_j} \x_j$ is an adjusted sample size for inference on $\beta_j$ based on how much information in $\x_j$ is orthogonal to $\X_{\hat{S}_j}$. 
-
-The beauty of this construction is that the variance of the PIPE estimator is inherently related to the bias of the estimator. So, while no attempt is made to correct for the bias, in cases where the bias is likely large, so too is the resulting variance.
-
-Note that a related and reasonable idea would be to construct the distribution about $z_j$ marginally. We did consider this, however, as one might expect, ignoring the relationship between predictors is fine under independence, but the performance suffers notably otherwise.
-
-\section{Relaxed Lasso Confidence Intervals}
-
-An alternative route to constructing debiased confidence from a lasso fit would be to derive the distribution of $\bh_j$ conditional on the selected model (ignoring the lasso penalty). It is straightforward to show that $\hat{\beta_j} | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j})$. This is not a new idea, rather, it is just a very minor extension of the (fully) relaxed lasso. For a selected variable, it is exactly the same as the relaxed lasso. However, this formulation also suggests a way to construct intervals not only for the selected variables but also those with estimates equal to zero. 
-
-Recent work, notably \cite{Hastie2020}, has suggested that the relaxed lasso performs quite well in terms of accuracy of the estimates, however, to our knowledge, no work has been done considering how well intervals derived from the relaxed lasso perform in terms of coverage.
-
-\section{PIPE, Relaxed Lasso, and the Debiased Lasso}
-
-PIPE and the relaxed lasso share a common feature in that they suggest the same variance. They differ however in their point estimate. PIPE keeps the same point estimate as was considered for the Debiased bootstrap CIs. That is the PIPE estimator is just the correlation of $x_j$ with the partial residuals.
-
-The relaxed lasso estimator is different in that it does not use the partial residuals from the lasso but rather $y$ projected onto the active set of variables. That is, the partial residuals from an OLS fit. 
-
-\as{
-  \begin{aligned}
-  &\text{Pipe: } &\bar{\beta}_j | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j}) \\
-  &\text{Relaxed: } &\hat{\beta_j}^* | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j}) \\
-  \end{aligned}
-}
-
-Where $\bar{\beta}_j = \frac{x_j^T(\y - \X_{-j}\hat{\beta}_{-j})}{x_j^T x_j}$ and $\hat{\beta_j}^* = \frac{x_j^T Q_{S_j} \y}{x_j^T Q_{S_j} x_j}$.
-
-With the relaxed lasso in mind, the estimator for the debiased lasso is notably an extension of this while also retaining a similarity to PIPE. Specifically, the debiased lasso uses the residuals from the original fit but instead of projecting $\x_j$ onto the active features as the relaxed does (the denominator), this is where the method gets more involved. Here, the Debiased lasso uses additional lasso fits to project $\x_j$ onto the other features. While an oversimplification and omitting the details, let us denote this lasso based projection $Q_{\lambda_j}$ in order to mirror the notation for PIPE and the relaxed lasso in order to draw a parallel. Then the estimator for the Debiased Lasso is $\bh_j^D = \frac{x_j^T Q_{\lambda_j} (\y - \X_{-j}\hat{\beta}_{-j})}{x_j^T Q_{\lambda_j} x_j}$.
-
-
-\section{Results}
 
 In this section, we consider a number of simulation set ups to compare the performance between the three previously discussed methods along with the debiased bootstrap...
 
@@ -162,20 +96,7 @@ In this section, we consider a number of simulation set ups to compare the perfo
     \end{center}
 \end{figure}
 
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=\linewidth]{sim_grp_opposite_dir_balanced}
-    \caption{\label{Fig:sim_grp_opposite_dir_balanced} n = p = 100, group sizes of 5, $\rho_{within} = 0.5$, $\rho_{between} = 0$. $V1_G1 = -V2_G1 = V3_G1 = -V4_G1 = 0.5$, and all other coefficients are 0.}
-    \end{center}
-\end{figure}
-
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=\linewidth]{sim_ldpe}
-    \caption{\label{Fig:sim_ldpe} p = 3000, n = 200, $\beta_j = \sqrt{\frac{18\log(p)}{n}} \text{ if } j \in \lbrace 1500, 1800, 2100, 2400, 2700, 3000 \rbrace$ else $\beta_j = \sqrt{\frac{18\log(p)}{nj^2}}$. Correlation is autoregressive with $\rho = 0.8$}
-    \end{center}
-\end{figure}
-
+We end this section with a simulation that does a good job at highlighting the differences between these two methods. 
 
 \begin{figure}[hbtp]
     \begin{center}
@@ -184,44 +105,95 @@ In this section, we consider a number of simulation set ups to compare the perfo
     \end{center}
 \end{figure}
 
+\subsection{Attacking PIPE}
+
+So far, we have seen the PIPE performs well in all scenarios we have considered. Here, we focusing on scenarios designed to target PIPE's weaknesses. For these scenarios we will take the perspective of a coefficient of interest $\beta_j$ which is being estimated with $z_j$. To design such scenarios, we consider the bias of $z_j$ along with the variance estimate, specifically the projection based adjustment component of the variance. $z_j$ is biased when $\cor(x_j, x_k) \neq 0$ and $|\bh_k - \beta_k| > 0$, where $j \neq k$. Again, assume that $\cor(x_j, x_k) \neq 0$, the projection based variance adjustment under compensates when variable $k$ is not selected in the model. That is, PIPE is likely to perform poorly in terms of coverage when $\cor(x_j, x_k) \neq 0$ (and preferably large in magnitude) and when $\beta_k \neq 0$ (and again is relatively large in magnitude) and when $\bh_k = 0$. To refine our focus further, we will focus here on scenarios where $\beta_j \neq 0$ as such covariates are often of most interest and are the driving force behind designing debiased CI methods. That said, the same logic holds when $\beta_j \neq 0$. Figure~\ref{Fig:sim_highcorr} is one such example where $B1$ is variable $j$ in this setup and $A1$ is variable $k$. In the simulations that follow, they are set up in a way that any signal variable could be viewed as a $j$ or $k$ variable. \logan{Before getting into the simulation for this section, what is interesting to notice here is that the bias of $z_j$ does not directly depend on $\bh_j$. That, being said, if $\cor(x_j, x_k) \neq 0$ then if $\bh_j$ is biased then it is likely that $\bh_k$ is biased in an offsetting manner. We admit that this is an over simplified view, especially in the context of penalized regression, however feel that it provides and intuitive perspective of what is going on.}
+
 \begin{figure}[hbtp]
     \begin{center}
     \includegraphics[width=\linewidth]{sim_grp_same_dir}
-    \caption{\label{Fig:sim_grp_same_dir} n = p = 100, $\rho_{V1, V2} = 0.5$ for $G1$ otherwise, $\rho_{V1, V2} = 0$. $V1_G1 = 0.8$, $V2_G1 = 0.2$, and all other coefficients are 0.}
+    \caption{\label{Fig:sim_grp_same_dir} n = p = 100, group sizes of 5, $\rho_{within} = 0.5$, $\rho_{between} = 0$. $V1_G1 = -V2_G1 = V3_G1 = -V4_G1 = 0.5$, and all other coefficients are 0.}
     \end{center}
 \end{figure}
+
+The first simulation we consider here is a simulation $N = 50$ and $p = 150$ and with $\X$ generated as before such that each $X_j$ is normally distributed with mean 0 and standard deviation 1. However, $\X_1$ and $\X_2$ were generated such that $\cor(\X_1, \X_2) = 0.7$. All other covariates were generated independently of $\X_1$ and $\X_2$ and each other. Additionally, $\beta_1 = \beta_2 = 1$ and all other coefficients are set to zero. Then, $\y$ was generated as $\y = \X\bb + \bvep$, where $\veps_i \iid N(0, 1)$. Figure~\ref{Fig:sim_grp_same_dir} shows the results for Variables 1 and 2 along with a random selection of null variables. Variables 1 and 2 show a slight undercoverage, but otherwise remain rather robust. One may notice that the intervals generally miss with bias away from zero, and while at first this may appear odd, it is expected for this set up. Part of the issue why this fails to produce any notable undercoverage is because $\beta_1$ and $\beta_2$ are too large and are selected in the lasso model in every simulation. The the signal is concentrated into just two variables. Note that in comparison each of the null variables were selected in about $5\%$ of simulations. The next simulation was designed to make it nearly impossible for lasso to select the correct model. 
+
+In this simulation, there were 50 signal variables, all of which had a magnitude of $1$. The 50 variables were generated in groups of 10, and in each group the variables were generated under an exchangeable correlation structure with $\rho = 0.7$. The null variables were still generated independently of the signal variables and each other. Within each signal group, the sign was the same and was set so that three of the groups had a positive relationship with the outcome and two groups a negative relationship. This set up accomplished two things. First, it creates a scenario where the signal variables are not always selected. Second, by creating groups with dense correlation, it increases the chance that any one variable may be correlated with multiple variables which are significantly biased (not included in the model). In this set up, each of the signal variables were selected about $35\%$ of the time on average with the null variables being selected about $8\%$ of the time. The performance of these is suboptimal due to being over conservative rather than under covering. This occurs 
+
+Its worth noting that the simulations presented here represent a very small fraction of those considered. We iterated through a range of scenarios trying to probe out weaknesses under this general set up of groups of densely correlated variables with the same effect.
+
+It is rather difficult to get any significant undercoverage when there is positive correlation between covariates with similar effects. An all the simulations we considered, if PIPE is going to error in one direction it will be over correction leading to wide intervals reflecting the uncertainty with respect to the selected model.
 
 \begin{figure}[hbtp]
     \begin{center}
-    \includegraphics[width=\linewidth]{sim_grp_same_dir_same_eff}
-    \caption{\label{Fig:sim_grp_same_dir_same_eff} n = p = 100, group sizes of 4, $\rho_{G1} = 0.5$ but zero for all other groups and $\rho_{between} = 0$. $V1_G1 = V2_G1 = V3_G1 = 1$, and all other coefficients are 0.}
+    \includegraphics[width=\linewidth]{sim_grp_many_small_cor}
+    \caption{\label{Fig:sim_grp_many_small_cor} n = p = 100, group sizes of 5, $\rho_{within} = 0.5$, $\rho_{between} = 0$. $V1_G1 = -V2_G1 = V3_G1 = -V4_G1 = 0.5$, and all other coefficients are 0.}
     \end{center}
 \end{figure}
 
-\section{Other families}
-\begin{figure}[hbtp]
-    \begin{center}
-    \includegraphics[width=\linewidth]{sim_poisson}
-    \caption{\label{Fig:sim_pois} n = 200}
-    \end{center}
-\end{figure}
+However, that is not to say that we could not determine scenarios where we could get pipe to noticably under cover. The following scenario represents a notable case. It mirrors the first simulation in this section, however, $\beta_2 = -1$. Equivalently, we could have made the $\cor(\X_1, \X_2) = -0.7$. Here the coverage for both intervals is around $10\%$. With such a high correlation but opposite signs, the variables often offset one another. Indeed, in any given simulation either variable was only selected about a third of the time. And when a one was not selected, this leads to considerable bias towards in the estimate of the other.
 
 \begin{figure}[hbtp]
     \begin{center}
-    \includegraphics[width=\linewidth]{sim_binomial}
-    \caption{\label{Fig:sim_binomial} n = 400}
+    \includegraphics[width=\linewidth]{sim_grp_opposite_dir_balanced}
+    \caption{\label{Fig:sim_grp_opposite_dir_balanced} n = p = 100, group sizes of 5, $\rho_{within} = 0.5$, $\rho_{between} = 0$. $V1_G1 = -V2_G1 = V3_G1 = -V4_G1 = 0.5$, and all other coefficients are 0.}
     \end{center}
 \end{figure}
 
+The previous example is rather extreme, but
+
+\subsection{Bootstrap Bias Decomposition}
+
+Next we direct our focus back to the Debias bootstrap CIs to shed light on why they break down. Figure~\ref{Fig:bootdist_indep} depicts a common bootstrap distribution for a non-zero coefficient from the simulation with results depicted in Figure~\ref{Fig:sim_independence}. Even with the data generate under independence (where little to no bias would be expected) there is a clear and pervasive bias that leads to undercoverage (even if it is moderate).
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=0.65\linewidth]{bootdist_indep}
+    \caption{\label{Fig:bootdist_indep} The bootstrap distribution for a for variable 2 in plot 2 with CIs superimposed. }
+    \end{center}
+\end{figure}
+
+Perplexed by this phenomenon occurring in datasets with little to no correlation, we set out to see if we could come up with an intuitive explanation. Let us first describe what is occurring and then we will work to convince the reader. 
+
+The lasso penalty encourages an asymmetry in the random selection of null variables that causes a disproportionate bias of non-null variables towards zero. This is amplified when there is correlation between variables.
+
+\begin{figure}[hbtp]
+    \begin{center}
+    \includegraphics[width=\linewidth]{bias_decomp_single_B}
+    \caption{\label{Fig:bias_decomp_single_B} n = p = 100, $\beta_A = 2$, $\beta_B = 0$, $\rho_{A,B} = 0.5$.  All other $\beta$s = 0 and  generated under independence}
+    \end{center}
+\end{figure}
+
+
+Consider a simple simulation set up with $n = p = 100$ where there is 1 true non-null variable, A s.t. $\beta_A = 1$ that is correlated with a null variable B with $\rho = 0.5$. All other variables are generated independent of $A$ and each other. For now, ignore B. Consider first, using a bootstrap to estimate the correlation between A and some null variable which we will call N. What will you find? The bootstrap distribution of sample correlations is symmetric about 0 (some negligible variation). That is, it is not the correlation that is asymmetric. However, it is how the lasso penalty treats the correlation that is asymmetric. Lets continue with 2 specific scenarios we might encounter while bootstrapping. First assume in Scenario 1 that by chance $\rho_{A,N} = 0.1$. Since the correlation is positive, $\bh_N$, if not 0, is likely to be positive, inducing bias in $z_A$. Now, for scenario 2, assume by chance $\rho_{A,N} = -0.1$. Well, since the correlation is negative, the signal attributed to $\bh_N$ is likely to be negative. So, although the correlations were opposite of one another, the tendency in both is to cause bias in $z_A$ towards zero. The individual probability and effect of this occurring may be quite small, however, in high dimensional settings such as this example, when there are 98 N variables, the cumulative effect is quite large. 
+
+Note that it was previously mentioned that the bias for $z_j$ is: $\frac{1}{n}\x_j^T \epsilon + \frac{1}{n}\x_j^T \X_{-j}(\bb^*_{-j} - \bbh_{-j})$. We can break this down a bit further to apply to the scenario outlined above. $Bias_A = \frac{1}{n}\x_A^T \epsilon + \frac{1}{n}\x_A^T \x_{B}(\beta^*_{B} - \bh_{B}) + \frac{1}{n}\x_A^T \X_{N}(\bb^*_{N} - \bbh_{N})$. That is, we can decompose the bias into three parts. The first is the irreducible bias which comes from the chance correlation between $\x_A$ and the errors. The other two components attribute bias from the single B variable and all 98 N variables respectively. We can use this to visualize the previous example. By taking the simulation set up in the previous paragraph and repeating it 1000 times and each time saving the bias attributable to each of the components. More specifically, for each generated dataset, we can save both the decomposed bias for the estimates from the original data as well as take 1000 bootstrap replications and save the bias decomposition for each bootstrap replication. 
+
+Figure~\ref{Fig:bias_decomp_single_B} contains three density plots. The top is mean bias components for the estimates on the bootstrapped datasets the middle contains the density plots for the original datasets and the bottom plots is the density of the difference for each simulated dataset and highlights the bias from the N variables that sneaks in while bootstrapping. In this depiction, ``Sum Attributable'' serves as a check that this is a true decomposition and is the sum of all three sources of bias. One may notice that the bias type ``Bias'' is only barely discernable in the final plot and that is because it nearly perfectly lines up with ``Sum Attributable'', as it should if this is a proper decomposition.
+
+The bottom density plot is of most interest as it essentially shows the additional bias introduced by the bootstrapping procedure. The additional bias from the error correlations is centered around zero. Interestingly, although right skewed, the additional bias from $B1$ has a mode nearly at zero. However, of most importance is the fact that the cumulative bias due to random associations with the $N$ variables makes up a majority of the bias. Admittedly, the total additional bias is somewhat small, standing at about $15\%$ of the average bias introduced (but corrected) by $\lambda$. However, this additional bias is over twice as much as the bias already in the initial estimates themselves. Additionally, as correlation structures get more dense and complex, the total additional bias will continue to increase. 
+
+\section{Discussion}
+
+In addition to PIPE being more robust, it is also far more computationally efficient than bootstrapping. 
+
+The beauty of this construction is that the variance of the PIPE estimator is inherently related to the bias of the estimator. So, while no attempt is made to correct for the bias, in cases where the bias is likely large, so too is the resulting variance.
 
 \newpage
-\section{Paper 3: Projection Based Average Coverage CIs}
+\section{Average Coverage CIs: A Projections Based Alternative to the Bootstrap}
 
 \subsection{Introduction}
 
 The lasso is a popular penalized regression method that applies an $L_1$ penalty, $\lambda \sum_{j = 1}^p |\beta_j|$, to a loss function that depends on the outcome of interest. In lasso-penalized linear regression (\cite{Tibshirani1996}), the objective function is $Q(\bb) = \frac{1}{2n} \sum ( y_i - X_i^T \bb )^2 + \lambda\norm{\bb}_1$. For lasso-penalized logistic regression, the objective function is $Q(\bb) = -\frac{1}{n} \sum\lbrace y_i X_i^T\bb - \log(1+\exp(X_i^T \bb)) \rbrace + \lambda \sum_{j = 1}^p |\beta_j|$. Regardless of the outcome, the resulting fit is generally sparse, a hallmark of the $L_1$ penalty. In part because of the $L_1$ penalty, methods for obtaining confidence intervals for the lasso model fit have lagged well behind the usage of the lasso. 
 
 Recently, however, we have shown that a simplified projection based approach does well in obtaining CIs that have good coverage. We use the word simplified here to draw contrast to other debiased methods which could also be considered projection based but whose projections are more involved. These more complicated procedures 1) are computationally expensive and 2) are better thought of as new models rather than inferential procedures for the lasso. PIPE proposed by \logan{CITE PIPE} and its confidence intervals explored by \logan{Manuscript 2} are both computationally efficient and retain a clear connection back to the original lasso model they are constructed from. The being said, PIPE CIs have no guarantee they will contain the original lasso estimate. While PIPE estimates are not actively debiased, they are still debiased relative to their respective lasso point estimates, as their debiasing all comes through a removal of the lasso penalty. 
+
+\begin{table}[hbtp]
+    \centering
+    \includegraphics[width=\linewidth]{laplace_comparison}
+    \caption{\label{Fig:laplace_comparison} Laplace distributed betas}
+\end{table}
+    
 
 \logan{CITE First manuscript} provides a new perspective on coverage properties for high dimensional CIs (HDCIs). Instead of requiring HDCIs to have proper coverage for each model parameter individually we instead proposed that average coverage may be a more reasonable target (especially if one wants the intervals to be around the lasso estimates). In this manuscript, the focus was around obtaining bootstrap CIs that met such definition. In this manuscript, the authors suggested a ``hybrid bootstrap'' approach where the sampling was done from the full conditional posterior (FCP) when $\bh_j = 0$. In this manuscript, we also briefly mention that always sampling from the FCP is far too conservative. This is understandable as uncertainty is essentially being double accounted for by the bootstrap and the sampling from the FCP. 
 
@@ -257,5 +229,4 @@ If the practitioner really wants both in the high dimensional setting, then an a
 
 \subsection{Applied to Generalized Linear Models}
 
-Build of PIPE for GLMs... which I still have not figured out for Poisson.
 

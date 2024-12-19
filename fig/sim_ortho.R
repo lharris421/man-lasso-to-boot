@@ -11,7 +11,7 @@ simulation_info <- list(seed = 1234, iterations = 1000, same_lambda = TRUE,
                         ), script_name = "distributions")
 
 ## Load data back in
-methods <- methods[c("relaxed_lasso", "pipe", "lasso_proj", "debiased")]
+methods <- methods[c("pipe", "debiased")]
 
 files <- expand.grid(
   "method" = names(methods),

@@ -1,6 +1,7 @@
 source("./fig/setup.R")
 
 alpha <- 0.2
+methods <- list("lasso"   = list(method = "posterior", method_arguments = list(penalty = "lasso")))
 for (i in 1:length(methods)) {
   methods[[i]]$method_arguments["alpha"] <- alpha
 }

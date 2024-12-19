@@ -1,19 +1,13 @@
 source("./fig/setup.R")
 
-for (i in 1:length(methods)) {
-  methods[[i]]$method_arguments["alpha"] <- 0.05
-}
 
 simulation_info <- list(seed = 1234, iterations = 1000,
                         simulation_function = "gen_data_distribution", simulation_arguments = list(
-                          n = 100, J = 25, K = 4, beta = 0.5,
-                          J1 = 1, K1 = 4, rho.g = 0.5, distribution = "group"
+                          n = 200, p = 3000, beta = c(rep(c(0.001, 0.001, 0.001, 0.001, 0.85, 0.001, 0.001, 0.001, 0.001, 0.001), 30), rep(0, 2700)),
+                          rho = 0.8, corr = "autoregressive"
                         ), script_name = "distributions")
 
-simulation_info <- list(seed = 1234, iterations = 1000,
-                        simulation_function = "gen_data_distribution", simulation_arguments = list(
-                          n = 100, p = 100, distribution = "high_corr"
-                        ), script_name = "distributions")
+
 
 ## Load data back in
 methods <- methods[c("pipe")]
@@ -35,7 +29,7 @@ for (i in 1:nrow(files)) {
 
 results[[1]] %>%
   # filter(stringr::str_detect(variable, "G01")) %>%
-  mutate(selected = betahat != 0) %>%
+  mutate(selected = coef != 0) %>%
   group_by(variable) %>%
   summarise(prop_selected = mean(selected)) %>%
   kbl(
@@ -51,4 +45,4 @@ results[[1]] %>%
   gsub("\\\\begin\\{table\\}\\[.*?\\]", "", .) %>%
   gsub("\\\\centering", "", .) %>%
   gsub("\\\\end\\{table\\}", "", .) %>%
-  writeLines("tab/sim_grp_opposite_dir_balanced_selection_freq.tex")
+  writeLines("tab/testing_selection_freq.tex")

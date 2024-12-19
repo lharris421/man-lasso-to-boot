@@ -15,17 +15,14 @@ params <- list(
 
 res <- indexr::read_objects(rds_path, params)
 
+names(res)
+
 plots <- bias_decomp_plots(res, params)
 
 # Create density plots using ggplot2
 pdf("./fig/bias_decomp_single_B.pdf", height = 5, width = 7)
-plots[[1]]
+plots[[3]] / plots[[2]] / plots[[1]] +
+  patchwork::plot_layout(guides = "collect", axes = "collect")
 dev.off()
 
-pdf("./fig/bias_decomp_single_B_orig.pdf", height = 5, width = 7)
-plots[[2]]
-dev.off()
 
-pdf("./fig/bias_decomp_single_B_boot.pdf", height = 5, width = 7)
-plots[[3]]
-dev.off()

@@ -6,12 +6,12 @@ for (i in 1:length(methods)) {
 
 simulation_info <- list(seed = 1234, iterations = 1000,
                         simulation_function = "gen_data_distribution", simulation_arguments = list(
-                          n = 100, J = 50, K = 2, beta = c(0.8, 0.2, rep(0, 98)), distribution = "group",
-                          J1 = 1, K1 = 2, rho.g = 0.5, rho.gz = 0 # K1 doesn't actually matter here (not used)
+                          n = 50, J = 75, K = 2, beta = c(1, 1, rep(0, 148)),
+                          J1 = 1, K1 = 2, rho.g = 0.7, distribution = "group"
                         ), script_name = "distributions")
 
 ## Load data back in
-methods <- methods[c("pipe", "relaxed_lasso")]
+methods <- methods[c("pipe")]
 
 files <- expand.grid(
   "method" = names(methods),

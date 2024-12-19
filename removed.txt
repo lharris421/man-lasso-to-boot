@@ -1,0 +1,22 @@
+\section{Relaxed Lasso Confidence Intervals}
+
+An alternative route to constructing debiased confidence from a lasso fit would be to derive the distribution of $\bh_j$ conditional on the selected model (ignoring the lasso penalty). It is straightforward to show that $\hat{\beta_j} | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j})$. This is not a new idea, rather, it is just a very minor extension of the (fully) relaxed lasso. For a selected variable, it is exactly the same as the relaxed lasso. However, this formulation also suggests a way to construct intervals not only for the selected variables but also those with estimates equal to zero. 
+
+Recent work, notably \cite{Hastie2020}, has suggested that the relaxed lasso performs quite well in terms of accuracy of the estimates, however, to our knowledge, no work has been done considering how well intervals derived from the relaxed lasso perform in terms of coverage.
+
+\section{PIPE, Relaxed Lasso, and the Debiased Lasso}
+
+PIPE and the relaxed lasso share a common feature in that they suggest the same variance. They differ however in their point estimate. PIPE keeps the same point estimate as was considered for the Debiased bootstrap CIs. That is the PIPE estimator is just the correlation of $x_j$ with the partial residuals.
+
+The relaxed lasso estimator is different in that it does not use the partial residuals from the lasso but rather $y$ projected onto the active set of variables. That is, the partial residuals from an OLS fit. 
+
+\as{
+  \begin{aligned}
+  &\text{Pipe: } &\bar{\beta}_j | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j}) \\
+  &\text{Relaxed: } &\hat{\beta_j}^* | S_j \sim N(\beta_j, \frac{\sigma^2}{x_j^T Q_{S_j} x_j}) \\
+  \end{aligned}
+}
+
+Where $\bar{\beta}_j = \frac{x_j^T(\y - \X_{-j}\hat{\beta}_{-j})}{x_j^T x_j}$ and $\hat{\beta_j}^* = \frac{x_j^T Q_{S_j} \y}{x_j^T Q_{S_j} x_j}$.
+
+With the relaxed lasso in mind, the estimator for the debiased lasso is notably an extension of this while also retaining a similarity to PIPE. Specifically, the debiased lasso uses the residuals from the original fit but instead of projecting $\x_j$ onto the active features as the relaxed does (the denominator), this is where the method gets more involved. Here, the Debiased lasso uses additional lasso fits to project $\x_j$ onto the other features. While an oversimplification and omitting the details, let us denote this lasso based projection $Q_{\lambda_j}$ in order to mirror the notation for PIPE and the relaxed lasso in order to draw a parallel. Then the estimator for the Debiased Lasso is $\bh_j^D = \frac{x_j^T Q_{\lambda_j} (\y - \X_{-j}\hat{\beta}_{-j})}{x_j^T Q_{\lambda_j} x_j}$.
